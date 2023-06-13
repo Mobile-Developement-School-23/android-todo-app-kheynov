@@ -2,4 +2,7 @@
     <string name="app_name">Todo App Yandex</string>
     <string name="urgency_icon">Urgency icon</string>
     <string name="info_button">Info Button</string>
+    <string name="todo_list_title">My Tasks</string>
+    <string name="show_done_tasks">Show done tasks</string>
+    <string name="add_todo">Add Todo</string>
 </resources>
