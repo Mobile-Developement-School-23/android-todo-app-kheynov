@@ -1,7 +1,8 @@
 package ru.kheynov.todoappyandex.data.repositories
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
@@ -41,28 +42,28 @@ class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
         )
     )
     
-    private val _todos = MutableSharedFlow<List<TodoItem>>()
+    private val _todos = MutableStateFlow<List<TodoItem>>(emptyList())
     override val todos: Flow<List<TodoItem>>
         get() = _todos
     
     init {
-        _todos.tryEmit(todosList.toList())
+        _todos.update { todosList.toList() }
     }
     
     override fun addTodo(todo: TodoItem) {
         todosList.add(todo)
-        _todos.tryEmit(todosList.toList())
+        _todos.update { todosList.toList() }
     }
     
     override fun deleteTodo(id: Int) {
         todosList.removeIf { it.id == id }
-        _todos.tryEmit(todosList.toList())
+        _todos.update { todosList.toList() } //TODO
     }
     
     override fun editTodo(todo: TodoItem) {
         val index = todosList.indexOfFirst { it.id == todo.id }
         todosList[index] = todo
-        _todos.tryEmit(todosList.toList())
+        _todos.update { todosList.toList() }
     }
     
     override fun getTodoById(id: Int): TodoItem? {

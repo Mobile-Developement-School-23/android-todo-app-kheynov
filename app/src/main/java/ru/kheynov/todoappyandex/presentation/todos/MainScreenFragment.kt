@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import ru.kheynov.todoappyandex.databinding.FragmentMainScreenBinding
-import ru.kheynov.todoappyandex.mainscreen.presentation.MainScreenViewModel
 
 
 class MainScreenFragment : Fragment() {

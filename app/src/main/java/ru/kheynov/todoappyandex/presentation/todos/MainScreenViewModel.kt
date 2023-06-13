@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.mainscreen.presentation
+package ru.kheynov.todoappyandex.presentation.todos
 
 import androidx.lifecycle.ViewModel
 
