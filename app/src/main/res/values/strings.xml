@@ -5,4 +5,10 @@
     <string name="todo_list_title">My Tasks</string>
     <string name="show_done_tasks">Show done tasks</string>
     <string name="add_todo">Add Todo</string>
+    <string name="close">Close</string>
+    <string name="save">Save</string>
+    <string name="todo_text_prompt">Enter task text</string>
+    <string name="urgency">Urgency</string>
+    <string name="make_until">Make until</string>
+    <string name="delete">Delete</string>
 </resources>

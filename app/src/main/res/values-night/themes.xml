@@ -3,5 +3,6 @@
     <style name="Base.Theme.TodoAppYandex" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorBackgroundPrimary</item>
         <item name="colorAccent">@color/blue</item>
+        <item name="colorSecondary">@color/blue</item>
     </style>
 </resources>

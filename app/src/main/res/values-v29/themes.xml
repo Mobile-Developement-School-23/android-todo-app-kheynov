@@ -2,7 +2,8 @@
 <resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="Base.Theme.TodoAppYandex" parent="Theme.Material3.DayNight.NoActionBar" android:forceDarkAllowed="false">
+        <item name="colorSecondary">@color/blue</item>
         <item name="colorAccent">@color/blue</item>
-<!--        <item name="colorPrimary">@color/colorBackgroundPrimary</item>-->
+        <!--        <item name="colorPrimary">@color/colorBackgroundPrimary</item>-->
     </style>
 </resources>
