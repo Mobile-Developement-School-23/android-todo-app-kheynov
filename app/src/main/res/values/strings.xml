@@ -9,8 +9,16 @@
     <string name="save">Save</string>
     <string name="todo_text_prompt">Enter task text</string>
     <string name="urgency">Urgency</string>
-    <string name="make_until">Make until: %1$s</string>
+    <string name="make_until_placeholder">Make until: %1$s</string>
+    <string name="make_until">Make until</string>
     <string name="delete">Delete</string>
     <string name="tasks_done">Tasks done: %1$d</string>
     <string name="no_data">No data</string>
+    <string name="title_cannot_be_empty">Title cannot be empty</string>
+    <string name="todo_not_found">Todo not found</string>
+    <string name="low_urgency">Low</string>
+    <string name="standard_urgency">Standard</string>
+    <string name="high_urgency">High</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
 </resources>
