@@ -30,21 +30,23 @@
         tools:text="Выполнено: 5" />
 
     <ImageView
+        android:id="@+id/toggleDoneTasks"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="@dimen/space_l"
         android:contentDescription="@string/show_done_tasks"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/doneCountText"
         app:layout_constraintTop_toTopOf="@+id/doneCountText"
-        tools:src="@drawable/ic_opened_eye" />
+        android:src="@drawable/ic_opened_eye" />
 
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="@dimen/space_m"
+        android:layout_marginTop="@dimen/space_l"
+        app:cardBackgroundColor="@color/colorBackgroundSecondary"
         app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +56,30 @@
             android:id="@+id/rvTodoList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="4dp" />
+            android:layout_margin="@dimen/space_xs" />
+
+        <ProgressBar
+            android:id="@+id/progressCircular"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
     </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/noDataImage"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/space_l"
+        android:contentDescription="@string/no_data"
+        android:src="@drawable/no_data"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/doneCountText" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabAddTodo"

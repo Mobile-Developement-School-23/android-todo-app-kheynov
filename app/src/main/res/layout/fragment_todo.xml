@@ -16,14 +16,15 @@
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
-            android:layout_margin="16dp"
+            android:layout_margin="@dimen/space_m"
             android:contentDescription="@string/close"
             android:scaleX="1.1"
             android:scaleY="1.1"
             android:src="@drawable/baseline_close_24"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/colorPrimary" />
 
         <Button
             style="?android:attr/borderlessButtonStyle"
@@ -54,7 +55,7 @@
                 android:id="@+id/textInputCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="16dp"
+                android:layout_marginHorizontal="@dimen/space_m"
                 app:cardCornerRadius="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -66,7 +67,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/colorBackgroundSecondary"
-                    android:padding="16dp"
+                    android:padding="@dimen/space_m"
                     app:hintEnabled="true"
                     app:hintTextColor="@color/colorPrimary">
 
@@ -84,44 +85,51 @@
                 android:id="@+id/configLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/space_m"
                 android:orientation="vertical"
-                android:paddingHorizontal="16dp"
+                android:paddingHorizontal="@dimen/space_m"
                 app:layout_constraintTop_toBottomOf="@+id/textInputCard">
 
-                <TextView
-                    android:id="@+id/urgencyTitle"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/urgencyLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/urgency"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_body"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:orientation="vertical"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/urgencyState"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textColor="@color/colorTertiary"
-                    android:textSize="@dimen/text_subhead"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/urgencyTitle"
-                    tools:text="Нет" />
+                    <TextView
+                        android:id="@+id/urgencyTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/urgency"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/text_body" />
+
+                    <TextView
+                        android:id="@+id/urgencyState"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/space_s"
+                        android:textColor="@color/colorTertiary"
+                        android:textSize="@dimen/text_subhead"
+                        tools:text="Нет" />
+                </LinearLayout>
 
                 <com.google.android.material.divider.MaterialDivider
                     android:id="@+id/divider1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:layout_constraintTop_toBottomOf="@+id/urgencyState" />
+                    android:layout_marginTop="@dimen/space_s"
+                    app:layout_constraintTop_toBottomOf="@+id/urgencyLayout" />
 
                 <TextView
                     android:id="@+id/makeUntilTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/space_s"
                     android:text="@string/make_until"
                     android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_body"
@@ -140,7 +148,7 @@
                 <androidx.appcompat.widget.SwitchCompat
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="4dp"
+                    android:layout_marginEnd="@dimen/space_xs"
                     android:checked="false"
                     app:layout_constraintBottom_toTopOf="@id/divider2"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -153,33 +161,24 @@
                     android:id="@+id/divider2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/space_s"
                     app:layout_constraintTop_toBottomOf="@+id/makeUntilDate" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <ImageView
-                android:id="@+id/deleteIcon"
-                android:layout_width="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_height="wrap_content"
-                android:contentDescription="@string/delete"
-                android:src="@drawable/baseline_delete_24"
-                app:layout_constraintBottom_toBottomOf="@+id/materialButton"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/materialButton" />
-
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/materialButton"
+                android:id="@+id/deleteButton"
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/space_m"
                 android:text="@string/delete"
-                android:layout_marginVertical="8dp"
-                android:textColor="@color/blue"
+                android:textColor="@color/colorDisable"
+                app:icon="@drawable/baseline_delete_24"
+                app:iconTint="@color/colorDisable"
+                app:iconSize="24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/deleteIcon"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/configLayout" />
-
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

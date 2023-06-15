@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingVertical="16dp">
+    android:paddingVertical="@dimen/space_m">
 
     <CheckBox
         android:id="@+id/checkBox"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:checked="true"
+        android:checked="false"
         android:scaleX="1.2"
         android:scaleY="1.2"
         app:buttonTint="@color/checkbox_hint"
@@ -20,24 +20,25 @@
 
     <ImageView
         android:id="@+id/urgencyIndicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_width="16dp"
+        android:layout_height="16dp"
+        android:scaleType="center"
+        app:tint="@color/gray"
         android:contentDescription="@string/urgency_icon"
         android:src="@drawable/baseline_arrow_downward_24"
-        app:layout_constraintBottom_toBottomOf="@id/checkBox"
-        app:layout_constraintStart_toEndOf="@id/checkBox"
-        app:layout_constraintTop_toTopOf="@id/checkBox" />
+        app:layout_constraintBottom_toBottomOf="@id/itemText"
+        app:layout_constraintTop_toTopOf="@id/itemText"
+        app:layout_constraintStart_toEndOf="@id/checkBox"/>
 
     <TextView
         android:id="@+id/itemText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="8dp"
+        android:layout_marginEnd="@dimen/space_s"
         android:ellipsize="end"
         android:maxLines="3"
-        android:paddingHorizontal="4dp"
-        android:paddingVertical="4dp"
+        android:paddingHorizontal="@dimen/space_xs"
+        android:paddingVertical="@dimen/space_xs"
         app:layout_constraintEnd_toStartOf="@id/infoIcon"
         app:layout_constraintStart_toEndOf="@+id/urgencyIndicator"
         app:layout_constraintTop_toTopOf="parent"
@@ -51,15 +52,16 @@
         app:layout_constraintTop_toBottomOf="@id/itemText"
         tools:text="Дата: 01.01.1970" />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/infoIcon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:background="@color/transparent"
+        android:layout_marginEnd="@dimen/space_m"
         android:contentDescription="@string/info_button"
         android:src="@drawable/baseline_info_24"
-        app:layout_constraintBottom_toBottomOf="@id/itemText"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/itemText"
+        app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/colorTertiary" />
 </androidx.constraintlayout.widget.ConstraintLayout>
