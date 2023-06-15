@@ -7,35 +7,36 @@ import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 import java.time.LocalDateTime
+import java.util.UUID
 
 class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
     private val todosList = mutableListOf(
         TodoItem(
-            id = 1,
+            id = UUID.randomUUID().toString(),
             text = "First todo",
             urgency = TodoUrgency.LOW,
             isDone = false,
             createdAt = LocalDateTime.now(),
         ),
         TodoItem(
-            id = 2,
+            id = UUID.randomUUID().toString(),
             text = "Second todo",
             urgency = TodoUrgency.STANDARD,
             isDone = false,
             createdAt = LocalDateTime.now(),
         ),
         TodoItem(
-            id = 3,
+            id = UUID.randomUUID().toString(),
             text = "Third todo",
             urgency = TodoUrgency.HIGH,
             isDone = false,
             createdAt = LocalDateTime.now(),
         ),
         TodoItem(
-            id = 4,
+            id = UUID.randomUUID().toString(),
             text = "Купить молоко",
             urgency = TodoUrgency.LOW,
-            isDone = true,
+            isDone = false,
             createdAt = LocalDateTime.now(),
             deadline = LocalDateTime.now().plusDays(1),
             editedAt = LocalDateTime.now().plusHours(8),
@@ -55,7 +56,7 @@ class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
         _todos.update { todosList.toList() }
     }
     
-    override fun deleteTodo(id: Int) {
+    override fun deleteTodo(id: String) {
         todosList.removeIf { it.id == id }
         _todos.update { todosList.toList() } //TODO
     }
@@ -66,7 +67,12 @@ class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
         _todos.update { todosList.toList() }
     }
     
-    override fun getTodoById(id: Int): TodoItem? {
+    override fun getTodoById(id: String): TodoItem? {
         return todosList.find { it.id == id }
+    }
+    
+    override fun setTodoState(todoItem: TodoItem, state: Boolean) {
+        todosList.find { it.id == todoItem.id }?.isDone = state
+        _todos.update { todosList.toList() }
     }
 }

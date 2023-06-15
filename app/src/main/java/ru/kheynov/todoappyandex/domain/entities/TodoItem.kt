@@ -1,15 +1,13 @@
 package ru.kheynov.todoappyandex.domain.entities
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
 
 data class TodoItem(
-    val id: Int,
-    val text: String,
-    val urgency: TodoUrgency,
-    val deadline: LocalDateTime? = null,
-    val isDone: Boolean,
-    val createdAt: LocalDateTime,
-    val editedAt: LocalDateTime? = null,
+    val id: String,
+    var text: String,
+    var urgency: TodoUrgency,
+    var deadline: LocalDateTime? = null,
+    var isDone: Boolean,
+    var createdAt: LocalDateTime,
+    var editedAt: LocalDateTime? = null,
 )
