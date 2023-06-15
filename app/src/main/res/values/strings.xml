@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Todo App Yandex</string>
+    <string name="app_name" translatable="false">Todo App Yandex</string>
     <string name="urgency_icon">Urgency icon</string>
     <string name="info_button">Info Button</string>
     <string name="todo_list_title">My Tasks</string>
@@ -9,6 +9,8 @@
     <string name="save">Save</string>
     <string name="todo_text_prompt">Enter task text</string>
     <string name="urgency">Urgency</string>
-    <string name="make_until">Make until</string>
+    <string name="make_until">Make until: %1$s</string>
     <string name="delete">Delete</string>
+    <string name="tasks_done">Tasks done: %1$d</string>
+    <string name="no_data">No data</string>
 </resources>

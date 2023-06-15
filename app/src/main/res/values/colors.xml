@@ -19,5 +19,6 @@
     <color name="lightBlue">#4D007AFF</color>
     <color name="gray">#8E8E93</color>
     <color name="grayLight">#D1D1D6</color>
+    <color name="transparent">#00000000</color>
 </resources>
 
