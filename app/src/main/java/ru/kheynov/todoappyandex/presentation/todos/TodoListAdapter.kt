@@ -73,7 +73,7 @@ class TodoListAdapter(
                     dateText.visibility = View.VISIBLE
                     dateText.text =
                         itemView.context.getString(
-                            R.string.make_until,
+                            R.string.make_until_placeholder,
                             dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
                         )
                 }

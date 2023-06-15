@@ -83,7 +83,7 @@ object InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
     
     override fun deleteTodo(id: String) {
         dao.delete(id)
-        _todos.update { dao.getAll() } 
+        _todos.update { dao.getAll() }
     }
     
     override fun editTodo(todo: TodoItem) {

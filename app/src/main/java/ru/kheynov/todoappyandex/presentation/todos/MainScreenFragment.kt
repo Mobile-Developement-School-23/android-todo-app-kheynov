@@ -87,6 +87,11 @@ class MainScreenFragment : Fragment() {
         }
     }
     
+    override fun onResume() {
+        super.onResume()
+        viewModel.fetchTodos()
+    }
+    
     private fun handleActions(action: MainScreenAction) {
         when (action) {
             MainScreenAction.RouteToAdd -> {
@@ -127,6 +132,12 @@ class MainScreenFragment : Fragment() {
             if (state is MainScreenState.Loaded) {
                 doneCountText.text = getString(R.string.tasks_done, state.data.count { it.isDone })
             }
+            (rvTodoList.adapter as TodoListAdapter).submitList(
+                when (state) {
+                    is MainScreenState.Loaded -> state.data
+                    else -> emptyList()
+                }
+            )
         }
     }
     

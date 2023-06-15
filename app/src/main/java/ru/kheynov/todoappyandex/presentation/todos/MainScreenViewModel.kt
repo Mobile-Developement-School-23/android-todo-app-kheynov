@@ -17,7 +17,7 @@ import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
 
 class MainScreenViewModel : ViewModel() {
-    private val repository: TodoItemsRepository = InMemoryTodoItemsRepositoryImpl()
+    private val repository: TodoItemsRepository = InMemoryTodoItemsRepositoryImpl
     
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
@@ -29,10 +29,6 @@ class MainScreenViewModel : ViewModel() {
     
     val todos get() = repository.todos
     
-    init {
-        fetchTodos()
-    }
-    
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
         viewModelScope.launch {
             repository.setTodoState(todoItem, state)
@@ -40,7 +36,7 @@ class MainScreenViewModel : ViewModel() {
         fetchTodos()
     }
     
-    private fun fetchTodos() {
+     fun fetchTodos() {
         _state.update { (MainScreenState.Loading) }
         viewModelScope.launch {
             repository.todos.collect { todos ->

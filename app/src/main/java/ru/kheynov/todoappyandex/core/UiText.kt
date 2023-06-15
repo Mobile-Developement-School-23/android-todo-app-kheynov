@@ -7,10 +7,10 @@ sealed class UiText {
     data class PlainText(val value: String) : UiText()
     class StringResource(@StringRes val resId: Int) : UiText()
     
-    fun Context.getText(): String {
-        return when (this@UiText) {
+    fun toString(context: Context): String {
+        return when (this) {
             is PlainText -> value
-            is StringResource -> getString(resId)
+            is StringResource -> context.getString(resId)
         }
     }
 }
