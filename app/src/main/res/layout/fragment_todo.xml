@@ -13,11 +13,14 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/closeButton"
+            style="@style/Widget.AppCompat.Button.Borderless"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_margin="@dimen/space_m"
             android:contentDescription="@string/close"
+            android:scaleType="center"
             android:scaleX="1.1"
             android:scaleY="1.1"
             android:src="@drawable/baseline_close_24"
@@ -27,6 +30,7 @@
             app:tint="@color/colorPrimary" />
 
         <Button
+            android:id="@+id/saveButton"
             style="?android:attr/borderlessButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -146,6 +150,7 @@
                     tools:text="2 июня 2021" />
 
                 <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/deadlineSwitch"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/space_xs"
@@ -174,8 +179,8 @@
                 android:text="@string/delete"
                 android:textColor="@color/colorDisable"
                 app:icon="@drawable/baseline_delete_24"
-                app:iconTint="@color/colorDisable"
                 app:iconSize="24dp"
+                app:iconTint="@color/colorDisable"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/configLayout" />

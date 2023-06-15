@@ -1,39 +1,39 @@
 package ru.kheynov.todoappyandex.data.repositories
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 import java.time.LocalDateTime
-import java.util.UUID
 
-class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
+object MockDataSource {
     private val todosList = mutableListOf(
         TodoItem(
-            id = UUID.randomUUID().toString(),
+            id = "1",
             text = "First todo",
             urgency = TodoUrgency.LOW,
             isDone = false,
             createdAt = LocalDateTime.now(),
         ),
         TodoItem(
-            id = UUID.randomUUID().toString(),
+            id = "2",
             text = "Second todo",
             urgency = TodoUrgency.STANDARD,
             isDone = false,
             createdAt = LocalDateTime.now(),
         ),
         TodoItem(
-            id = UUID.randomUUID().toString(),
+            id = "3",
             text = "Third todo",
             urgency = TodoUrgency.HIGH,
             isDone = false,
             createdAt = LocalDateTime.now(),
         ),
         TodoItem(
-            id = UUID.randomUUID().toString(),
+            id = "4",
             text = "Купить молоко",
             urgency = TodoUrgency.LOW,
             isDone = false,
@@ -43,36 +43,62 @@ class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
         )
     )
     
-    private val _todos = MutableStateFlow<List<TodoItem>>(emptyList())
-    override val todos: Flow<List<TodoItem>>
-        get() = _todos
-    
-    init {
-        _todos.update { todosList.toList() }
-    }
-    
-    override fun addTodo(todo: TodoItem) {
-        todosList.add(todo)
-        _todos.update { todosList.toList() }
-    }
-    
-    override fun deleteTodo(id: String) {
-        todosList.removeIf { it.id == id }
-        _todos.update { todosList.toList() } //TODO
-    }
-    
-    override fun editTodo(todo: TodoItem) {
-        val index = todosList.indexOfFirst { it.id == todo.id }
-        todosList[index] = todo
-        _todos.update { todosList.toList() }
-    }
-    
-    override fun getTodoById(id: String): TodoItem? {
+    fun getTodoById(id: String): TodoItem? {
         return todosList.find { it.id == id }
     }
     
+    fun add(todo: TodoItem) {
+        todosList.add(todo)
+    }
+    
+    fun delete(id: String) {
+        todosList.removeIf { it.id == id }
+    }
+    
+    fun edit(todo: TodoItem) {
+        val index = todosList.indexOfFirst { it.id == todo.id }
+        todosList[index] = todo
+    }
+    
+    fun getAll(): List<TodoItem> {
+        return todosList.toList()
+    }
+}
+
+object InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
+    private val dao = MockDataSource
+    
+    private val _todos = MutableStateFlow<List<TodoItem>>(emptyList())
+    override val todos: StateFlow<List<TodoItem>>
+        get() = _todos.asStateFlow()
+    
+    init {
+        _todos.update { dao.getAll() }
+    }
+    
+    override fun addTodo(todo: TodoItem) {
+        dao.add(todo)
+        _todos.update { dao.getAll() }
+    }
+    
+    override fun deleteTodo(id: String) {
+        dao.delete(id)
+        _todos.update { dao.getAll() } 
+    }
+    
+    override fun editTodo(todo: TodoItem) {
+        dao.edit(todo)
+        _todos.update { dao.getAll() }
+    }
+    
+    override fun getTodoById(id: String): TodoItem? {
+        return dao.getTodoById(id)
+    }
+    
     override fun setTodoState(todoItem: TodoItem, state: Boolean) {
-        todosList.find { it.id == todoItem.id }?.isDone = state
-        _todos.update { todosList.toList() }
+        dao.edit(todoItem.copy(isDone = state))
+        _todos.update {
+            dao.getAll()
+        }
     }
 }
