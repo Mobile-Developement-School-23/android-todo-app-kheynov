@@ -35,7 +35,7 @@ class MainScreenFragment : Fragment() {
             viewModel.setTodoState(todoItem, state)
         },
         onTodoDetailsClick = { todoItem ->
-            viewModel.showInfo(todoItem)
+            viewModel.editTodo(todoItem)
         }
     )
     
@@ -67,7 +67,7 @@ class MainScreenFragment : Fragment() {
         }
         
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect(::updateUI)
             }
         }
@@ -94,11 +94,11 @@ class MainScreenFragment : Fragment() {
     
     private fun handleActions(action: MainScreenAction) {
         when (action) {
-            MainScreenAction.RouteToAdd -> {
+            MainScreenAction.NavigateToAdding -> {
                 navController.navigate(R.id.action_todosFragment_to_todoDetailFragment)
             }
             
-            is MainScreenAction.RouteToEdit -> {
+            is MainScreenAction.NavigateToEditing -> {
                 navController.navigate(
                     R.id.action_todosFragment_to_todoDetailFragment,
                     TodoFragment.createArgumentsForEditing(action.id)
@@ -108,11 +108,10 @@ class MainScreenFragment : Fragment() {
             is MainScreenAction.ToggleDoneTasks -> {
                 binding.toggleDoneTasks.apply {
                     setImageDrawable(
-                        if (action.state) {
+                        if (action.state)
                             AppCompatResources.getDrawable(context, R.drawable.ic_opened_eye)
-                        } else {
+                        else
                             AppCompatResources.getDrawable(context, R.drawable.ic_closed_eye)
-                        }
                     )
                 }
                 val data = (viewModel.state.value as? MainScreenState.Loaded)?.data ?: return

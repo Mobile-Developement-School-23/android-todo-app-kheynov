@@ -50,27 +50,24 @@ class TodoViewModel : ViewModel() {
         }
     }
     
-    fun onTitleChanged(text: String) {
+    fun changeTitle(text: String) {
         _state.update { _state.value.copy(text = text) }
     }
     
-    fun onUrgencyChanged(urgency: TodoUrgency) {
+    fun changeUrgency(urgency: TodoUrgency) {
         _state.update { _state.value.copy(urgency = urgency) }
     }
     
-    fun onDeadlineSwitchChanged(checked: Boolean) {
+    fun onDeadlineSwitchChecked(checked: Boolean) {
         if (checked) {
-            if (_state.value.deadline == null) {
-                viewModelScope.launch {
-                    _actions.send(AddEditAction.ShowDatePicker)
-                }
+            if (_state.value.deadline != null) return
+            viewModelScope.launch {
+                _actions.send(AddEditAction.ShowDatePicker)
             }
-        } else {
-            _state.update { _state.value.copy(deadline = null) }
-        }
+        } else _state.update { _state.value.copy(deadline = null) }
     }
     
-    fun onDeadlineChanged(deadline: LocalDate?) {
+    fun changeDeadline(deadline: LocalDate?) {
         _state.update { _state.value.copy(deadline = deadline?.atStartOfDay()) }
     }
     

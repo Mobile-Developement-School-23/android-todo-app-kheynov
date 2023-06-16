@@ -13,21 +13,16 @@ import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.databinding.TodosListItemBinding
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
+import java.text.DateFormat
+import java.text.SimpleDateFormat
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 class TodoListAdapter(
     val onTodoLongClick: (TodoItem) -> Unit = {},
     val onTodoDetailsClick: (TodoItem) -> Unit = {},
     val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> },
 ) : ListAdapter<TodoItem, TodoListAdapter.TodoViewHolder>(DiffCallback()) {
-    
-    private class DiffCallback : DiffUtil.ItemCallback<TodoItem>() {
-        override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
-            oldItem.id == newItem.id
-        
-        override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
-            oldItem == newItem
-    }
     
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         val binding =
@@ -54,13 +49,11 @@ class TodoListAdapter(
         
         fun bind(todo: TodoItem) {
             binding.apply {
-                root.visibility = View.VISIBLE
                 root.setOnLongClickListener {
                     onTodoLongClick(todo)
                     true
                 }
                 itemText.apply {
-                    println(todo.isDone)
                     paintFlags = if (todo.isDone)
                         paintFlags or STRIKE_THRU_TEXT_FLAG
                     else
@@ -68,14 +61,14 @@ class TodoListAdapter(
                     text = todo.text
                 }
                 
-                dateText.visibility = View.GONE
-                todo.deadline?.let { dateTime ->
-                    dateText.visibility = View.VISIBLE
-                    dateText.text =
-                        itemView.context.getString(
-                            R.string.make_until_placeholder,
-                            dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
-                        )
+                dateText.apply {
+                    visibility = if (todo.deadline == null) View.GONE else View.VISIBLE
+                    val dateTime = todo.deadline ?: return
+//                    val dateFormatter = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.DEFAULT, Locale("ru"))
+                    text = itemView.context.getString(
+                        R.string.make_until_placeholder,
+                        dateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+                    )
                 }
                 
                 checkBox.apply {
@@ -90,33 +83,42 @@ class TodoListAdapter(
                 }
                 
                 urgencyIndicator.apply {
-                    when (todo.urgency) {
-                        TodoUrgency.LOW -> {
-                            visibility = View.VISIBLE
-                            setImageDrawable(
-                                ContextCompat.getDrawable(
-                                    context,
-                                    R.drawable.baseline_arrow_downward_24
-                                )
-                            )
-                            setColorFilter(ContextCompat.getColor(context, R.color.gray))
-                        }
-                        
-                        TodoUrgency.STANDARD -> visibility = View.INVISIBLE
-                        TodoUrgency.HIGH -> {
-                            visibility = View.VISIBLE
-                            setImageDrawable(
-                                ContextCompat.getDrawable(
-                                    context,
-                                    R.drawable.ic_high_urgency
-                                )
-                            )
-                            setColorFilter(ContextCompat.getColor(context, R.color.red))
-                        }
+                    visibility = when (todo.urgency) {
+                        TodoUrgency.LOW -> View.VISIBLE
+                        TodoUrgency.STANDARD -> View.INVISIBLE
+                        TodoUrgency.HIGH -> View.VISIBLE
                     }
+                    setImageDrawable(
+                        when (todo.urgency) {
+                            TodoUrgency.LOW, TodoUrgency.STANDARD -> ContextCompat.getDrawable(
+                                context,
+                                R.drawable.baseline_arrow_downward_24
+                            )
+                            
+                            TodoUrgency.HIGH -> ContextCompat.getDrawable(
+                                context,
+                                R.drawable.ic_high_urgency
+                            )
+                        }
+                    )
+                    setColorFilter(
+                        when (todo.urgency) {
+                            TodoUrgency.LOW -> ContextCompat.getColor(context, R.color.gray)
+                            TodoUrgency.STANDARD -> ContextCompat.getColor(context, R.color.gray)
+                            TodoUrgency.HIGH -> ContextCompat.getColor(context, R.color.red)
+                        }
+                    )
                 }
             }
         }
         
+    }
+    
+    private class DiffCallback : DiffUtil.ItemCallback<TodoItem>() {
+        override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
+            oldItem.id == newItem.id
+        
+        override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
+            oldItem == newItem
     }
 }

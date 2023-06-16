@@ -69,32 +69,36 @@ class TodoFragment : Fragment() {
         }
         
         binding.apply {
-            deleteButton.setTextColor(
-                if (isEditing) ContextCompat.getColor(requireContext(), R.color.red)
-                else ContextCompat.getColor(requireContext(), R.color.colorDisable)
-            )
-            deleteButton.setIconTintResource(if (isEditing) R.color.red else R.color.colorDisable)
-            deleteButton.setOnClickListener {
-                viewModel.deleteTodo()
+            deleteButton.apply {
+                setTextColor(
+                    if (isEditing) ContextCompat.getColor(requireContext(), R.color.red)
+                    else ContextCompat.getColor(requireContext(), R.color.colorDisable)
+                )
+                setIconTintResource(if (isEditing) R.color.red else R.color.colorDisable)
+                setOnClickListener {
+                    viewModel.deleteTodo()
+                }
+                isEnabled = isEditing
             }
-            deleteButton.isEnabled = isEditing
             
             closeButton.setOnClickListener {
                 navController.popBackStack()
             }
-            
             saveButton.setOnClickListener {
                 viewModel.saveTodo()
             }
-            titleEditText.setText(viewModel.state.value.text)
-            titleEditText.addTextChangedListener {
-                viewModel.onTitleChanged(it.toString())
+            
+            titleEditText.apply {
+                setText(viewModel.state.value.text)
+                addTextChangedListener {
+                    viewModel.changeTitle(it.toString())
+                }
             }
             urgencyLayout.setOnClickListener {
                 showUrgencyMenu(it)
             }
             deadlineSwitch.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.onDeadlineSwitchChanged(isChecked)
+                viewModel.onDeadlineSwitchChecked(isChecked)
             }
         }
     }
@@ -122,7 +126,7 @@ class TodoFragment : Fragment() {
             R.style.DatePickerStyle,
             
             { _, year_picker, month_picker, day_picker ->
-                viewModel.onDeadlineChanged(
+                viewModel.changeDeadline(
                     LocalDate.of(
                         year_picker,
                         month_picker + 1,
@@ -147,17 +151,17 @@ class TodoFragment : Fragment() {
         popup.setOnMenuItemClickListener {
             when (it.itemId) {
                 R.id.urgencyLowOption -> {
-                    viewModel.onUrgencyChanged(TodoUrgency.LOW)
+                    viewModel.changeUrgency(TodoUrgency.LOW)
                     true
                 }
                 
                 R.id.urgencyStandardOption -> {
-                    viewModel.onUrgencyChanged(TodoUrgency.STANDARD)
+                    viewModel.changeUrgency(TodoUrgency.STANDARD)
                     true
                 }
                 
                 R.id.urgencyHighOption -> {
-                    viewModel.onUrgencyChanged(TodoUrgency.HIGH)
+                    viewModel.changeUrgency(TodoUrgency.HIGH)
                     true
                 }
                 

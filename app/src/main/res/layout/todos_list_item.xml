@@ -54,10 +54,9 @@
 
     <ImageButton
         android:id="@+id/infoIcon"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@color/transparent"
-        android:layout_marginEnd="@dimen/space_m"
         android:contentDescription="@string/info_button"
         android:src="@drawable/baseline_info_24"
         app:layout_constraintBottom_toBottomOf="parent"

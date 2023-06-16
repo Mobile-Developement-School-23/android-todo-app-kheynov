@@ -45,15 +45,15 @@ class MainScreenViewModel : ViewModel() {
         }
     }
     
-    fun showInfo(todoItem: TodoItem) {
+    fun editTodo(todoItem: TodoItem) {
         viewModelScope.launch {
-            _actions.send(MainScreenAction.RouteToEdit(todoItem.id))
+            _actions.send(MainScreenAction.NavigateToEditing(todoItem.id))
         }
     }
     
     fun addTodo() {
         viewModelScope.launch {
-            _actions.send(MainScreenAction.RouteToAdd)
+            _actions.send(MainScreenAction.NavigateToAdding)
         }
     }
     
