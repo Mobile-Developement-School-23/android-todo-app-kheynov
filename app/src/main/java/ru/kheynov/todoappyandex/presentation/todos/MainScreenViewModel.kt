@@ -18,25 +18,25 @@ import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
 
 class MainScreenViewModel : ViewModel() {
     private val repository: TodoItemsRepository = InMemoryTodoItemsRepositoryImpl
-    
+
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
-    
+
     private val _actions: Channel<MainScreenAction> = Channel(Channel.BUFFERED)
     val actions: Flow<MainScreenAction> = _actions.receiveAsFlow()
-    
+
     private var isShowingDoneTasks = true
-    
+
     val todos get() = repository.todos
-    
+
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
         viewModelScope.launch {
             repository.setTodoState(todoItem, state)
         }
         fetchTodos()
     }
-    
-     fun fetchTodos() {
+
+    fun fetchTodos() {
         _state.update { (MainScreenState.Loading) }
         viewModelScope.launch {
             repository.todos.collect { todos ->
@@ -44,19 +44,19 @@ class MainScreenViewModel : ViewModel() {
             }
         }
     }
-    
+
     fun editTodo(todoItem: TodoItem) {
         viewModelScope.launch {
             _actions.send(MainScreenAction.NavigateToEditing(todoItem.id))
         }
     }
-    
+
     fun addTodo() {
         viewModelScope.launch {
             _actions.send(MainScreenAction.NavigateToAdding)
         }
     }
-    
+
     fun toggleDoneTasks() {
         viewModelScope.launch {
             isShowingDoneTasks = !isShowingDoneTasks

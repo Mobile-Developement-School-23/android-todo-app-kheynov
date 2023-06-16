@@ -16,17 +16,17 @@ import ru.kheynov.todoappyandex.data.repositories.InMemoryTodoItemsRepositoryImp
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
-import ru.kheynov.todoappyandex.presentation.editor.state_holders.AddEditAction
+import ru.kheynov.todoappyandex.presentation.editor.stateHolders.AddEditAction
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
 class TodoViewModel : ViewModel() {
     private val repository: TodoItemsRepository = InMemoryTodoItemsRepositoryImpl
-    
+
     private val _actions: Channel<AddEditAction> = Channel(Channel.BUFFERED)
     val actions: Flow<AddEditAction> = _actions.receiveAsFlow()
-    
+
     private val _state = MutableStateFlow(
         TodoItem(
             id = "",
@@ -34,11 +34,11 @@ class TodoViewModel : ViewModel() {
             urgency = TodoUrgency.STANDARD,
             deadline = null,
             isDone = false,
-            createdAt = LocalDateTime.now(),
+            createdAt = LocalDateTime.now()
         )
     )
     val state: StateFlow<TodoItem> = _state.asStateFlow()
-    
+
     fun fetchTodo(id: String) {
         viewModelScope.launch {
             val todo = repository.getTodoById(id)
@@ -49,28 +49,30 @@ class TodoViewModel : ViewModel() {
             }
         }
     }
-    
+
     fun changeTitle(text: String) {
         _state.update { _state.value.copy(text = text) }
     }
-    
+
     fun changeUrgency(urgency: TodoUrgency) {
         _state.update { _state.value.copy(urgency = urgency) }
     }
-    
+
     fun onDeadlineSwitchChecked(checked: Boolean) {
         if (checked) {
             if (_state.value.deadline != null) return
             viewModelScope.launch {
                 _actions.send(AddEditAction.ShowDatePicker)
             }
-        } else _state.update { _state.value.copy(deadline = null) }
+        } else {
+            _state.update { _state.value.copy(deadline = null) }
+        }
     }
-    
+
     fun changeDeadline(deadline: LocalDate?) {
-        _state.update { _state.value.copy(deadline = deadline?.atStartOfDay()) }
+        _state.update { _state.value.copy(deadline = deadline) }
     }
-    
+
     fun saveTodo() {
         viewModelScope.launch {
             if (_state.value.text.isBlank()) {
@@ -85,7 +87,7 @@ class TodoViewModel : ViewModel() {
             _actions.send(AddEditAction.NavigateBack)
         }
     }
-    
+
     fun deleteTodo() {
         viewModelScope.launch {
             repository.deleteTodo(_state.value.id)

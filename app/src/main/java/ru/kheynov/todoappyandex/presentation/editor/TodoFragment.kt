@@ -22,7 +22,7 @@ import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.databinding.FragmentTodoBinding
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
-import ru.kheynov.todoappyandex.presentation.editor.state_holders.AddEditAction
+import ru.kheynov.todoappyandex.presentation.editor.stateHolders.AddEditAction
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
@@ -31,48 +31,50 @@ import java.util.Calendar
 class TodoFragment : Fragment() {
     private val viewModel: TodoViewModel by viewModels()
     private lateinit var navController: NavController
-    
-    
+
     private var _binding: FragmentTodoBinding? = null
     private val binding get() = _binding!!
-    
+
     private val todoId: String?
         get() = arguments?.getString(TODO_ID_KEY)
-    
-    private val isEditing: Boolean
-        get() = todoId != null
-    
+
+    private val isEditing: Boolean = todoId != null
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         todoId?.let { viewModel.fetchTodo(it) } // fetch task if editing
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.actions.collect(::handleActions)
             }
         }
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect(::updateUI)
             }
         }
-        
+
         binding.apply {
             deleteButton.apply {
                 setTextColor(
-                    if (isEditing) ContextCompat.getColor(requireContext(), R.color.red)
-                    else ContextCompat.getColor(requireContext(), R.color.colorDisable)
+                    if (isEditing) {
+                        ContextCompat.getColor(requireContext(), R.color.red)
+                    } else {
+                        ContextCompat.getColor(requireContext(), R.color.colorDisable)
+                    }
                 )
                 setIconTintResource(if (isEditing) R.color.red else R.color.colorDisable)
                 setOnClickListener {
@@ -80,14 +82,14 @@ class TodoFragment : Fragment() {
                 }
                 isEnabled = isEditing
             }
-            
+
             closeButton.setOnClickListener {
                 navController.popBackStack()
             }
             saveButton.setOnClickListener {
                 viewModel.saveTodo()
             }
-            
+
             titleEditText.apply {
                 setText(viewModel.state.value.text)
                 addTextChangedListener {
@@ -102,7 +104,7 @@ class TodoFragment : Fragment() {
             }
         }
     }
-    
+
     private fun handleActions(action: AddEditAction) {
         when (action) {
             AddEditAction.NavigateBack -> navController.popBackStack()
@@ -111,11 +113,11 @@ class TodoFragment : Fragment() {
                 action.error.toString(requireContext()),
                 Snackbar.LENGTH_SHORT
             ).show()
-            
+
             AddEditAction.ShowDatePicker -> showDatePicker()
         }
     }
-    
+
     private fun showDatePicker() {
         val c = Calendar.getInstance()
         val year = c.get(Calendar.YEAR)
@@ -124,7 +126,7 @@ class TodoFragment : Fragment() {
         val datePicker = DatePickerDialog(
             requireContext(),
             R.style.DatePickerStyle,
-            
+
             { _, year_picker, month_picker, day_picker ->
                 viewModel.changeDeadline(
                     LocalDate.of(
@@ -138,13 +140,13 @@ class TodoFragment : Fragment() {
             month,
             day
         )
-        
+
         datePicker.setButton(DatePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { _, _ ->
             binding.deadlineSwitch.isChecked = viewModel.state.value.deadline != null
         }
         datePicker.show()
     }
-    
+
     private fun showUrgencyMenu(view: View) {
         val popup = PopupMenu(requireContext(), view)
         popup.inflate(R.menu.urgency_menu)
@@ -154,23 +156,23 @@ class TodoFragment : Fragment() {
                     viewModel.changeUrgency(TodoUrgency.LOW)
                     true
                 }
-                
+
                 R.id.urgencyStandardOption -> {
                     viewModel.changeUrgency(TodoUrgency.STANDARD)
                     true
                 }
-                
+
                 R.id.urgencyHighOption -> {
                     viewModel.changeUrgency(TodoUrgency.HIGH)
                     true
                 }
-                
+
                 else -> false
             }
         }
         popup.show()
     }
-    
+
     private fun updateUI(state: TodoItem) {
         binding.apply {
             saveButton.isEnabled = state.text.isNotBlank()
@@ -179,7 +181,7 @@ class TodoFragment : Fragment() {
                 makeUntilDate.apply {
                     visibility = View.VISIBLE
                     text =
-                        state.deadline!!.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM))
+                        state.deadline!!.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
                 }
             } else {
                 deadlineSwitch.isChecked = false
@@ -192,15 +194,15 @@ class TodoFragment : Fragment() {
             }
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
-    
+
     companion object {
         private const val TODO_ID_KEY = "todo_id"
-        
+
         fun createArgumentsForEditing(todoId: String): Bundle {
             return bundleOf(TODO_ID_KEY to todoId)
         }

@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.presentation.editor.state_holders
+package ru.kheynov.todoappyandex.presentation.editor.stateHolders
 
 import ru.kheynov.todoappyandex.core.UiText
 
