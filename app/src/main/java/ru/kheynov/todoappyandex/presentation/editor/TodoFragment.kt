@@ -38,7 +38,7 @@ class TodoFragment : Fragment() {
     private val todoId: String?
         get() = arguments?.getString(TODO_ID_KEY)
 
-    private val isEditing: Boolean = todoId != null
+    private val isEditing: Boolean get() = todoId != null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +46,7 @@ class TodoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
+
         return binding.root
     }
 
@@ -69,6 +70,7 @@ class TodoFragment : Fragment() {
 
         binding.apply {
             deleteButton.apply {
+                isEnabled = isEditing
                 setTextColor(
                     if (isEditing) {
                         ContextCompat.getColor(requireContext(), R.color.red)
@@ -80,7 +82,6 @@ class TodoFragment : Fragment() {
                 setOnClickListener {
                     viewModel.deleteTodo()
                 }
-                isEnabled = isEditing
             }
 
             closeButton.setOnClickListener {
@@ -187,6 +188,7 @@ class TodoFragment : Fragment() {
                 deadlineSwitch.isChecked = false
                 makeUntilDate.visibility = View.INVISIBLE
             }
+
             urgencyState.text = when (viewModel.state.value.urgency) {
                 TodoUrgency.LOW -> getString(R.string.low_urgency)
                 TodoUrgency.STANDARD -> getString(R.string.standard_urgency)
