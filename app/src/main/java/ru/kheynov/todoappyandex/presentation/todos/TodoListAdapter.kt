@@ -4,7 +4,6 @@ import android.graphics.Paint.STRIKE_THRU_TEXT_FLAG
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CompoundButton
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -19,7 +18,7 @@ import java.time.format.FormatStyle
 class TodoListAdapter(
     val onTodoLongClick: (TodoItem) -> Unit = {},
     val onTodoDetailsClick: (TodoItem) -> Unit = {},
-    val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> }
+    val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> },
 ) : ListAdapter<TodoItem, TodoListAdapter.TodoViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
@@ -35,16 +34,8 @@ class TodoListAdapter(
     override fun getItemCount(): Int = currentList.size
 
     inner class TodoViewHolder(private val binding: TodosListItemBinding) :
-        RecyclerView.ViewHolder(binding.root), CompoundButton.OnCheckedChangeListener {
-        private var onBind = false
-
-        override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-            if (!onBind) {
-                notifyItemChanged(adapterPosition)
-                onTodoCheckboxClick(currentList[adapterPosition], isChecked)
-            }
-        }
-
+        RecyclerView.ViewHolder(binding.root) {
+        
         fun bind(todo: TodoItem) {
             binding.apply {
                 root.setOnLongClickListener {
@@ -70,10 +61,8 @@ class TodoListAdapter(
                 }
 
                 checkBox.apply {
-                    onBind = true
                     isChecked = todo.isDone
-                    onBind = false
-                    setOnCheckedChangeListener(this@TodoViewHolder)
+                    setOnClickListener { onTodoCheckboxClick(todo, !isChecked) }
                 }
 
                 infoIcon.setOnClickListener {
