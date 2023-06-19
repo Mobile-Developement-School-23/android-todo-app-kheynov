@@ -141,7 +141,11 @@ class TodoFragment : Fragment() {
             month,
             day
         )
-
+        
+        datePicker.setOnCancelListener {
+            binding.deadlineSwitch.isChecked = viewModel.state.value.deadline != null
+        }
+        
         datePicker.setButton(DatePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { _, _ ->
             binding.deadlineSwitch.isChecked = viewModel.state.value.deadline != null
         }
