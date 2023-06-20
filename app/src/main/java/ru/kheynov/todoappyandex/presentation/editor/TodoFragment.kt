@@ -69,7 +69,7 @@ class TodoFragment : Fragment() {
         }
 
         binding.apply {
-            deleteButton.apply {
+            with(deleteButton) {
                 isEnabled = isEditing
                 setTextColor(
                     if (isEditing) {
@@ -91,7 +91,7 @@ class TodoFragment : Fragment() {
                 viewModel.saveTodo()
             }
 
-            titleEditText.apply {
+            with(titleEditText) {
                 setText(viewModel.state.value.text)
                 addTextChangedListener {
                     viewModel.changeTitle(it.toString())
@@ -141,11 +141,11 @@ class TodoFragment : Fragment() {
             month,
             day
         )
-        
+
         datePicker.setOnCancelListener {
             binding.deadlineSwitch.isChecked = viewModel.state.value.deadline != null
         }
-        
+
         datePicker.setButton(DatePickerDialog.BUTTON_NEGATIVE, getString(R.string.cancel)) { _, _ ->
             binding.deadlineSwitch.isChecked = viewModel.state.value.deadline != null
         }
@@ -179,11 +179,11 @@ class TodoFragment : Fragment() {
     }
 
     private fun updateUI(state: TodoItem) {
-        binding.apply {
+        with(binding) {
             saveButton.isEnabled = state.text.isNotBlank()
             if (state.deadline != null) {
                 deadlineSwitch.isChecked = true
-                makeUntilDate.apply {
+                with(makeUntilDate) {
                     visibility = View.VISIBLE
                     text =
                         state.deadline!!.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))

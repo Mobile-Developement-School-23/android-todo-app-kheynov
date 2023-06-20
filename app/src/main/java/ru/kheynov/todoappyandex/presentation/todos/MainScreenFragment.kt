@@ -52,7 +52,7 @@ class MainScreenFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        binding.apply {
+        with(binding) {
             fabAddTodo.setOnClickListener {
                 viewModel.addTodo()
             }
@@ -62,7 +62,7 @@ class MainScreenFragment : Fragment() {
             }
         }
 
-        recyclerView.apply {
+        with(recyclerView) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rvAdapter
         }
@@ -107,7 +107,7 @@ class MainScreenFragment : Fragment() {
             }
 
             is MainScreenAction.ToggleDoneTasks -> {
-                binding.toggleDoneTasks.apply {
+                with(binding.toggleDoneTasks) {
                     setImageDrawable(
                         if (action.state) {
                             AppCompatResources.getDrawable(context, R.drawable.ic_opened_eye)
@@ -123,7 +123,7 @@ class MainScreenFragment : Fragment() {
     }
 
     private fun updateUI(state: MainScreenState) {
-        binding.apply {
+        with(binding) {
             progressCircular.visibility =
                 if (state is MainScreenState.Loading) View.VISIBLE else View.GONE
             rvTodoList.visibility = if (state is MainScreenState.Loaded) View.VISIBLE else View.GONE

@@ -18,7 +18,7 @@ import java.time.format.FormatStyle
 class TodoListAdapter(
     val onTodoLongClick: (TodoItem) -> Unit = {},
     val onTodoDetailsClick: (TodoItem) -> Unit = {},
-    val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> },
+    val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> }
 ) : ListAdapter<TodoItem, TodoListAdapter.TodoViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
@@ -35,14 +35,14 @@ class TodoListAdapter(
 
     inner class TodoViewHolder(private val binding: TodosListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        
+
         fun bind(todo: TodoItem) {
             binding.apply {
                 root.setOnLongClickListener {
                     onTodoLongClick(todo)
                     true
                 }
-                itemText.apply {
+                with(itemText) {
                     paintFlags = if (todo.isDone) {
                         paintFlags or STRIKE_THRU_TEXT_FLAG
                     } else {
@@ -51,25 +51,27 @@ class TodoListAdapter(
                     text = todo.text
                 }
 
-                dateText.apply {
+                with(dateText) {
                     visibility = if (todo.deadline == null) View.GONE else View.VISIBLE
-                    val dateTime = todo.deadline ?: return
-                    text = itemView.context.getString(
-                        R.string.make_until_placeholder,
-                        dateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
-                    )
+                    val dateTime = todo.deadline
+                    if (dateTime != null) {
+                        text = itemView.context.getString(
+                            R.string.make_until_placeholder,
+                            dateTime.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.LONG))
+                        )
+                    }
                 }
 
-                checkBox.apply {
+                with(checkBox) {
                     isChecked = todo.isDone
-                    setOnClickListener { onTodoCheckboxClick(todo, !isChecked) }
+                    setOnClickListener { onTodoCheckboxClick(todo, !todo.isDone) }
                 }
 
                 infoIcon.setOnClickListener {
                     onTodoDetailsClick(todo)
                 }
 
-                urgencyIndicator.apply {
+                with(urgencyIndicator) {
                     visibility = when (todo.urgency) {
                         TodoUrgency.LOW -> View.VISIBLE
                         TodoUrgency.STANDARD -> View.INVISIBLE
