@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="urgency_icon">Срочность задачи (иконка)</string>
+    <string name="info_button">Кнопка информации</string>
+    <string name="todo_list_title">Мои дела</string>
+    <string name="show_done_tasks">Показать выполненные задачи</string>
+    <string name="add_todo">Добавить задачу</string>
+    <string name="close">Закрыть</string>
+    <string name="save">Сохранить</string>
+    <string name="todo_text_prompt">Введите описание задачи</string>
+    <string name="urgency">Важность</string>
+    <string name="make_until_placeholder">Сделать до: %1$s</string>
+    <string name="make_until">Сделать до</string>
+    <string name="delete">Удалить</string>
+    <string name="tasks_done">Выполнено: %1$d</string>
+    <string name="no_data">Нет данных</string>
+    <string name="title_cannot_be_empty">Задача не может быть пустой</string>
+    <string name="todo_not_found">Задача не найдена</string>
+    <string name="low_urgency">Низкая</string>
+    <string name="standard_urgency">Обычная</string>
+    <string name="high_urgency">Высокая</string>
+    <string name="cancel">Отмена</string>
+    <string name="ok">ОК</string>
+</resources>

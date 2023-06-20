@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/urgencyLowOption"
+        android:title="@string/low_urgency" />
+    <item
+        android:id="@+id/urgencyStandardOption"
+        android:title="@string/standard_urgency" />
+    <item
+        android:id="@+id/urgencyHighOption"
+        android:title="@string/high_urgency" />
+</menu>
