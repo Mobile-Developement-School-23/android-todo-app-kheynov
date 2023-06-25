@@ -201,26 +201,26 @@ object InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
         _todos.update { dao.getAll() }
     }
 
-    override fun addTodo(todo: TodoItem) {
+    override suspend fun addTodo(todo: TodoItem) {
         dao.add(todo)
         _todos.update { dao.getAll() }
     }
 
-    override fun deleteTodo(id: String) {
+    override suspend fun deleteTodo(id: String) {
         dao.delete(id)
         _todos.update { dao.getAll() }
     }
 
-    override fun editTodo(todo: TodoItem) {
+    override suspend fun editTodo(todo: TodoItem) {
         dao.edit(todo)
         _todos.update { dao.getAll() }
     }
 
-    override fun getTodoById(id: String): TodoItem? {
+    override suspend fun getTodoById(id: String): TodoItem? {
         return dao.getTodoById(id)
     }
 
-    override fun setTodoState(todoItem: TodoItem, state: Boolean) {
+    override suspend fun setTodoState(todoItem: TodoItem, state: Boolean) {
         dao.edit(todoItem.copy(isDone = state))
         _todos.update {
             dao.getAll()

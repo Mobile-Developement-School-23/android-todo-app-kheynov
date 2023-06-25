@@ -5,9 +5,9 @@ import ru.kheynov.todoappyandex.domain.entities.TodoItem
 
 interface TodoItemsRepository {
     val todos: Flow<List<TodoItem>>
-    fun addTodo(todo: TodoItem)
-    fun deleteTodo(id: String)
-    fun editTodo(todo: TodoItem)
-    fun getTodoById(id: String): TodoItem?
-    fun setTodoState(todoItem: TodoItem, state: Boolean)
+    suspend fun addTodo(todo: TodoItem)
+    suspend fun deleteTodo(id: String)
+    suspend fun editTodo(todo: TodoItem)
+    suspend fun getTodoById(id: String): TodoItem?
+    suspend fun setTodoState(todoItem: TodoItem, state: Boolean)
 }
