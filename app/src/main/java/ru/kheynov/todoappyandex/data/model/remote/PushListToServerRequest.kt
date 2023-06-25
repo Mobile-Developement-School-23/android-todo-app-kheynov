@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PushListToServerRequest(
-    val list: List<TodoRemoteDTO>,
+    val list: List<TodoRemoteDTO>
 )

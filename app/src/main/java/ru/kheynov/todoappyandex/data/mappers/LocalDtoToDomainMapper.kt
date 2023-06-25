@@ -23,7 +23,6 @@ fun TodoLocalDTO.toDomain() = TodoItem(
     )
 )
 
-
 fun TodoItem.toLocalDTO() = TodoLocalDTO(
     id = id,
     text = text,
@@ -31,6 +30,8 @@ fun TodoItem.toLocalDTO() = TodoLocalDTO(
     deadline = deadline?.toEpochDay(),
     isDone = isDone,
     createdAt = createdAt.toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
-    editedAt = (editedAt
-        ?: createdAt).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now()))
+    editedAt = (
+        editedAt
+            ?: createdAt
+        ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now()))
 )

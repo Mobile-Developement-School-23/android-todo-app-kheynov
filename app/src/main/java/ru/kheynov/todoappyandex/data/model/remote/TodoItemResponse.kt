@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class TodoItemResponse(
     val revision: Int,
     val status: String,
-    @SerialName("element") val todo: TodoRemoteDTO,
+    @SerialName("element") val todo: TodoRemoteDTO
 )
