@@ -9,6 +9,7 @@ data class TodoItem(
     var urgency: TodoUrgency,
     var deadline: LocalDate? = null,
     var isDone: Boolean,
+    var color: String? = null,
     var createdAt: LocalDateTime,
     var editedAt: LocalDateTime? = null
 )
