@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.data.dao.local
+package ru.kheynov.todoappyandex.data.cache
 
 import androidx.room.Dao
 import androidx.room.Query

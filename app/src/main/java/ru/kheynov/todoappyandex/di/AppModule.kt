@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core
+package ru.kheynov.todoappyandex.di
 
 import android.app.Application
 import android.content.Context
@@ -14,9 +14,10 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import ru.kheynov.todoappyandex.data.dao.local.TodoLocalDatabase
-import ru.kheynov.todoappyandex.data.dao.remote.RemoteDataSource
-import ru.kheynov.todoappyandex.data.dao.remote.TodoAPI
+import ru.kheynov.todoappyandex.data.cache.TodoLocalDatabase
+import ru.kheynov.todoappyandex.data.network.dao.RemoteDataSource
+import ru.kheynov.todoappyandex.data.network.dao.TodoAPI
+import ru.kheynov.todoappyandex.data.network.interceptors.TokenInterceptor
 import ru.kheynov.todoappyandex.data.repositories.TodoRepositoryImpl
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 import javax.inject.Singleton
@@ -26,7 +27,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
     
-    private const val BASE_URL = "https://santa.s.kheynov.ru/api/v1/"
+    private const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
     
     private val json = Json {
         ignoreUnknownKeys = true
@@ -45,7 +46,7 @@ object AppModule {
         return Retrofit.Builder()
             .addConverterFactory(json.asConverterFactory(contentType))
             .baseUrl(BASE_URL)
-//            .client(httpClient)
+            .client(httpClient)
             .build()
     }
     

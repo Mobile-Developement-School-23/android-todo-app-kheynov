@@ -1,5 +1,6 @@
 package ru.kheynov.todoappyandex.data.mappers
 
+import ru.kheynov.todoappyandex.data.util.Converters
 import ru.kheynov.todoappyandex.data.model.remote.TodoRemoteDTO
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import java.time.Instant
@@ -11,7 +12,7 @@ fun TodoRemoteDTO.toDomain(): TodoItem =
     TodoItem(
         id = id,
         text = text,
-        urgency = enumValueOf(importance),
+        urgency = Converters().toUrgency(importance),
         deadline = deadline?.let { LocalDate.ofEpochDay(it) },
         isDone = done,
         createdAt = LocalDateTime.ofInstant(
@@ -26,18 +27,18 @@ fun TodoRemoteDTO.toDomain(): TodoItem =
     )
 
 fun TodoItem.toRemoteDTO(
-    deviceId: String
+    deviceId: String,
 ) = TodoRemoteDTO(
     id = id,
     text = text,
-    importance = urgency.name,
+    importance = Converters().fromUrgency(urgency),
     deadline = deadline?.toEpochDay(),
     done = isDone,
     createdAt = createdAt.toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
     updatedAt = (
-        editedAt
-            ?: createdAt
-        ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
+            editedAt
+                ?: createdAt
+            ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
     updatedBy = deviceId,
     color = color
 )

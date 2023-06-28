@@ -2,6 +2,7 @@ package ru.kheynov.todoappyandex.data.repositories
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -12,8 +13,8 @@ import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.core.ServerSideException
 import ru.kheynov.todoappyandex.core.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.UnauthorizedException
-import ru.kheynov.todoappyandex.data.dao.local.TodoLocalDAO
-import ru.kheynov.todoappyandex.data.dao.remote.RemoteDataSource
+import ru.kheynov.todoappyandex.data.cache.TodoLocalDAO
+import ru.kheynov.todoappyandex.data.network.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.data.mappers.toDomain
 import ru.kheynov.todoappyandex.data.mappers.toLocalDTO
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
@@ -31,6 +32,7 @@ private fun handleException(e: Exception): Resource.Failure {
                             message.contains("duplicate") -> DuplicateItemException()
                             else -> BadRequestException()
                         }
+                        
                         500 -> ServerSideException()
                         404 -> TodoItemNotFoundException()
                         401 -> UnauthorizedException()
@@ -54,11 +56,11 @@ class TodoRepositoryImpl @Inject constructor(
     
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
-            return@withContext try {
+            try {
                 val remoteData = remoteDataSource.fetchTodos()
                 remoteData.forEach { localDataSource.upsertTodo(it.toDomain().toLocalDTO()) }
-                localDataSource.getTodos().collect { localItems ->
-                    remoteDataSource.pushTodos(localItems.map { it.toDomain() })
+                todos.last().let {
+                    remoteDataSource.pushTodos(it)
                 }
                 Resource.Success(Unit)
             } catch (e: Exception) {
