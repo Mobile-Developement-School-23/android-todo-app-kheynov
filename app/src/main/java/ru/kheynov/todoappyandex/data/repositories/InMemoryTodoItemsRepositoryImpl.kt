@@ -4,6 +4,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
@@ -190,40 +191,48 @@ object MockDataSource {
     }
 }
 
-object InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
+class InMemoryTodoItemsRepositoryImpl : TodoItemsRepository {
     private val dao = MockDataSource
 
     private val _todos = MutableStateFlow<List<TodoItem>>(emptyList())
     override val todos: StateFlow<List<TodoItem>>
         get() = _todos.asStateFlow()
 
+    override suspend fun syncTodos(): Resource<Unit> {
+        return Resource.Success(Unit)
+    }
+
     init {
         _todos.update { dao.getAll() }
     }
 
-    override suspend fun addTodo(todo: TodoItem) {
+    override suspend fun addTodo(todo: TodoItem): Resource<Unit> {
         dao.add(todo)
         _todos.update { dao.getAll() }
+        return Resource.Success(Unit)
     }
 
-    override suspend fun deleteTodo(id: String) {
+    override suspend fun deleteTodo(id: String): Resource<Unit> {
         dao.delete(id)
         _todos.update { dao.getAll() }
+        return Resource.Success(Unit)
     }
 
-    override suspend fun editTodo(todo: TodoItem) {
+    override suspend fun editTodo(todo: TodoItem): Resource<Unit> {
         dao.edit(todo)
         _todos.update { dao.getAll() }
+        return Resource.Success(Unit)
     }
 
-    override suspend fun getTodoById(id: String): TodoItem? {
-        return dao.getTodoById(id)
+    override suspend fun getTodoById(id: String): Resource<TodoItem?> {
+        return Resource.Success(dao.getTodoById(id))
     }
 
-    override suspend fun setTodoState(todoItem: TodoItem, state: Boolean) {
+    override suspend fun setTodoState(todoItem: TodoItem, state: Boolean): Resource<Unit> {
         dao.edit(todoItem.copy(isDone = state))
         _todos.update {
             dao.getAll()
         }
+        return Resource.Success(Unit)
     }
 }

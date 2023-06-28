@@ -17,11 +17,6 @@ interface TodoAPI {
     @GET("list")
     suspend fun getTodos(): TodoListResponse
 
-    @GET("list/{id}")
-    suspend fun getTodoById(
-        @Path("id") id: String
-    ): TodoItemResponse
-
     @PATCH("list")
     suspend fun syncTodosWithServer(
         @Header("X-Last-Known-Revision") revision: Int,

@@ -2,6 +2,7 @@ package ru.kheynov.todoappyandex.presentation.todos
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,14 +11,16 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.kheynov.todoappyandex.data.repositories.InMemoryTodoItemsRepositoryImpl
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
+import javax.inject.Inject
 
-class MainScreenViewModel : ViewModel() {
-    private val repository: TodoItemsRepository = InMemoryTodoItemsRepositoryImpl
+@HiltViewModel
+class MainScreenViewModel @Inject constructor(
+    private val repository: TodoItemsRepository
+) : ViewModel() {
 
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()

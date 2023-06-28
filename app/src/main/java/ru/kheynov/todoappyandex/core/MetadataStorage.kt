@@ -10,21 +10,21 @@ private enum class KEYS {
 }
 
 class MetadataStorage @Inject constructor(
-    private val pref: SharedPreferences,
+    private val pref: SharedPreferences
 ) {
     val deviceId: String = pref.getString(KEYS.ID_KEY.name, null) ?: run {
         val id = UUID.randomUUID().toString().subSequence(0, 6).toString()
         saveToPreferences(id, KEYS.ID_KEY)
         id
     }
-    
+
     var lastKnownRevision: Int = 0
         set(value) {
             field = value
             saveToPreferences(value, KEYS.REV_KEY)
         }
         get() = pref.getInt(KEYS.REV_KEY.name, 0)
-    
+
     private fun <T> saveToPreferences(value: T?, key: KEYS) {
         val editor: SharedPreferences.Editor = pref.edit()
         when (value) {

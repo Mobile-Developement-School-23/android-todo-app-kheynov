@@ -2,6 +2,7 @@ package ru.kheynov.todoappyandex.presentation.editor
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,7 +13,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.core.UiText
-import ru.kheynov.todoappyandex.data.repositories.InMemoryTodoItemsRepositoryImpl
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
@@ -20,10 +20,12 @@ import ru.kheynov.todoappyandex.presentation.editor.stateHolders.AddEditAction
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
+import javax.inject.Inject
 
-class TodoViewModel : ViewModel() {
-    private val repository: TodoItemsRepository = InMemoryTodoItemsRepositoryImpl
-
+@HiltViewModel
+class TodoViewModel @Inject constructor(
+    private val repository: TodoItemsRepository
+) : ViewModel() {
     private val _actions: Channel<AddEditAction> = Channel(Channel.BUFFERED)
     val actions: Flow<AddEditAction> = _actions.receiveAsFlow()
 
@@ -39,16 +41,16 @@ class TodoViewModel : ViewModel() {
     )
     val state: StateFlow<TodoItem> = _state.asStateFlow()
 
-    fun fetchTodo(id: String) {
-        viewModelScope.launch {
-            val todo = repository.getTodoById(id)
-            _state.value = todo ?: kotlin.run {
-                _actions.send(AddEditAction.ShowError(UiText.StringResource(R.string.todo_not_found)))
-                _actions.send(AddEditAction.NavigateBack)
-                return@launch
-            }
-        }
-    }
+//    fun fetchTodo(id: String) {
+//        viewModelScope.launch {
+//            val todo = repository.getTodoById(id)
+//            _state.value = todo ?: kotlin.run {
+//                _actions.send(AddEditAction.ShowError(UiText.StringResource(R.string.todo_not_found)))
+//                _actions.send(AddEditAction.NavigateBack)
+//                return@launch
+//            }
+//        }
+//    }
 
     fun changeTitle(text: String) {
         _state.update { _state.value.copy(text = text) }

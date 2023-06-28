@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.databinding.FragmentTodoBinding
@@ -28,6 +29,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
 
+@AndroidEntryPoint
 class TodoFragment : Fragment() {
     private val viewModel: TodoViewModel by viewModels()
     private lateinit var navController: NavController
@@ -54,7 +56,7 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        todoId?.let { viewModel.fetchTodo(it) } // fetch task if editing
+//        todoId?.let { viewModel.fetchTodo(it) } // fetch task if editing
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

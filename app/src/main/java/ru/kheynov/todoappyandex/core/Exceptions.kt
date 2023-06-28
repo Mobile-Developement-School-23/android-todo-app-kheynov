@@ -4,6 +4,7 @@ open class TodoException : Exception()
 
 class OutOfSyncDataException : TodoException()
 class TodoItemNotFoundException : TodoException()
-class ServerException : TodoException()
 class BadRequestException : TodoException()
 class UnauthorizedException : TodoException()
+class ServerSideException : TodoException()
+class DuplicateItemException : TodoException()

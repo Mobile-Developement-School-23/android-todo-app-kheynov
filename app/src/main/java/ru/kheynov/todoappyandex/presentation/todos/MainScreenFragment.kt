@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.databinding.FragmentMainScreenBinding
@@ -21,6 +22,7 @@ import ru.kheynov.todoappyandex.presentation.editor.TodoFragment
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
 
+@AndroidEntryPoint
 class MainScreenFragment : Fragment() {
     private val viewModel: MainScreenViewModel by viewModels()
     private lateinit var navController: NavController
