@@ -138,12 +138,9 @@ class MainScreenFragment : Fragment() {
             if (state is MainScreenState.Loaded) {
                 doneCountText.text = getString(R.string.tasks_done, state.data.count { it.isDone })
             }
-            (rvTodoList.adapter as TodoListAdapter).submitList(
-                when (state) {
-                    is MainScreenState.Loaded -> state.data
-                    else -> emptyList()
-                }
-            )
+            if (state is MainScreenState.Loaded) {
+                (rvTodoList.adapter as TodoListAdapter).submitList(state.data)
+            }
         }
     }
     

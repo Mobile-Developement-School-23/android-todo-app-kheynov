@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
+import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.core.UiText
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
@@ -24,11 +25,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TodoViewModel @Inject constructor(
-    private val repository: TodoItemsRepository
+    private val repository: TodoItemsRepository,
 ) : ViewModel() {
     private val _actions: Channel<AddEditAction> = Channel(Channel.BUFFERED)
     val actions: Flow<AddEditAction> = _actions.receiveAsFlow()
-
+    
     private val _state = MutableStateFlow(
         TodoItem(
             id = "",
@@ -40,26 +41,27 @@ class TodoViewModel @Inject constructor(
         )
     )
     val state: StateFlow<TodoItem> = _state.asStateFlow()
-
-//    fun fetchTodo(id: String) {
-//        viewModelScope.launch {
-//            val todo = repository.getTodoById(id)
-//            _state.value = todo ?: kotlin.run {
-//                _actions.send(AddEditAction.ShowError(UiText.StringResource(R.string.todo_not_found)))
-//                _actions.send(AddEditAction.NavigateBack)
-//                return@launch
-//            }
-//        }
-//    }
-
+    
+    fun fetchTodo(id: String) {
+        viewModelScope.launch {
+            val todo = repository.getTodoById(id)
+            if (todo is Resource.Failure) {
+                _actions.send(AddEditAction.ShowError(UiText.StringResource(R.string.todo_not_found)))
+                _actions.send(AddEditAction.NavigateBack)
+                return@launch
+            }
+            _state.update { (todo as Resource.Success).result }
+        }
+    }
+    
     fun changeTitle(text: String) {
         _state.update { _state.value.copy(text = text) }
     }
-
+    
     fun changeUrgency(urgency: TodoUrgency) {
         _state.update { _state.value.copy(urgency = urgency) }
     }
-
+    
     fun onDeadlineSwitchChecked(checked: Boolean) {
         if (checked) {
             if (_state.value.deadline != null) return
@@ -70,11 +72,11 @@ class TodoViewModel @Inject constructor(
             _state.update { _state.value.copy(deadline = null) }
         }
     }
-
+    
     fun changeDeadline(deadline: LocalDate?) {
         _state.update { _state.value.copy(deadline = deadline) }
     }
-
+    
     fun saveTodo() {
         viewModelScope.launch {
             if (_state.value.text.isBlank()) {
@@ -89,7 +91,7 @@ class TodoViewModel @Inject constructor(
             _actions.send(AddEditAction.NavigateBack)
         }
     }
-
+    
     fun deleteTodo() {
         viewModelScope.launch {
             repository.deleteTodo(_state.value.id)

@@ -1,9 +1,10 @@
 package ru.kheynov.todoappyandex.data.repositories
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.kheynov.todoappyandex.core.BadRequestException
@@ -14,9 +15,9 @@ import ru.kheynov.todoappyandex.core.ServerSideException
 import ru.kheynov.todoappyandex.core.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.UnauthorizedException
 import ru.kheynov.todoappyandex.data.cache.TodoLocalDAO
-import ru.kheynov.todoappyandex.data.network.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.data.mappers.toDomain
 import ru.kheynov.todoappyandex.data.mappers.toLocalDTO
+import ru.kheynov.todoappyandex.data.network.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 import javax.inject.Inject
@@ -49,19 +50,21 @@ class TodoRepositoryImpl @Inject constructor(
     private val localDataSource: TodoLocalDAO,
     private val remoteDataSource: RemoteDataSource,
 ) : TodoItemsRepository {
-    override val todos: Flow<List<TodoItem>>
-        get() = localDataSource.getTodos().map {
-            it.map { todo -> todo.toDomain() }
-        }
+    private val _todos: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
+    override val todos: StateFlow<List<TodoItem>> = _todos.asStateFlow()
     
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
                 val remoteData = remoteDataSource.fetchTodos()
                 remoteData.forEach { localDataSource.upsertTodo(it.toDomain().toLocalDTO()) }
-                todos.last().let {
-                    remoteDataSource.pushTodos(it)
-                }
+                localDataSource
+                    .getTodos()
+                    .map { todos -> todos.toDomain() }
+                    .let { todos ->
+                        remoteDataSource.pushTodos(todos)
+                        _todos.update { todos }
+                    }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -73,6 +76,7 @@ class TodoRepositoryImpl @Inject constructor(
             return@withContext try {
                 localDataSource.upsertTodo(todo.toLocalDTO())
                 remoteDataSource.addTodo(todo)
+                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -84,6 +88,7 @@ class TodoRepositoryImpl @Inject constructor(
             return@withContext try {
                 localDataSource.deleteTodoById(id)
                 remoteDataSource.deleteTodo(id)
+                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -95,17 +100,19 @@ class TodoRepositoryImpl @Inject constructor(
             return@withContext try {
                 localDataSource.upsertTodo(todo.toLocalDTO())
                 remoteDataSource.editTodo(todo)
+                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
             }
         }
     
-    override suspend fun getTodoById(id: String): Resource<TodoItem?> =
+    override suspend fun getTodoById(id: String): Resource<TodoItem> =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val todo = localDataSource.getTodoById(id)?.toDomain()
-                Resource.Success(todo)
+                if (todo == null) Resource.Failure(TodoItemNotFoundException())
+                else Resource.Success(todo)
             } catch (e: Exception) {
                 handleException(e)
             }
@@ -116,6 +123,7 @@ class TodoRepositoryImpl @Inject constructor(
             return@withContext try {
                 localDataSource.setTodoState(todoItem.id, state)
                 remoteDataSource.setTodoState(todoItem, state)
+                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)

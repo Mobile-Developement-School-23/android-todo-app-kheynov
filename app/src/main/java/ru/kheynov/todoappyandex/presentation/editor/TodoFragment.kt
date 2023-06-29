@@ -48,7 +48,6 @@ class TodoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -56,7 +55,7 @@ class TodoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-//        todoId?.let { viewModel.fetchTodo(it) } // fetch task if editing
+        todoId?.let { viewModel.fetchTodo(it) } // fetch task if editing
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
