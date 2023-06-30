@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.Constraints
 import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,6 +30,18 @@ class MainActivity : AppCompatActivity() {
                 requiredNetworkType = NetworkType.NOT_ROAMING
             )
         ).build()
+        WorkManager.getInstance(this).enqueue(syncWorker)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val syncWorker = OneTimeWorkRequestBuilder<SyncTodosWorker>()
+            .setConstraints(
+                Constraints(
+                    requiredNetworkType = NetworkType.NOT_ROAMING
+                )
+            ).addTag("INTERNET_LOST_N_FOUND")
+            .build()
         WorkManager.getInstance(this).enqueue(syncWorker)
     }
 }
