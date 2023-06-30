@@ -201,7 +201,10 @@ class TodoFragment : Fragment() {
                 deadlineSwitch.isChecked = false
                 makeUntilDate.visibility = View.INVISIBLE
             }
-            titleEditText.setText(state.text)
+            if (titleEditText.text?.isEmpty() == true) {
+                // чтобы задать текст только при первом получении тудушки
+                titleEditText.setText(state.text)
+            }
 
             urgencyState.text = when (viewModel.state.value.urgency) {
                 TodoUrgency.LOW -> getString(R.string.low_urgency)
