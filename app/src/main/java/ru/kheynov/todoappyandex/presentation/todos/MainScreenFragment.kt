@@ -1,7 +1,6 @@
 package ru.kheynov.todoappyandex.presentation.todos
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,6 +63,7 @@ class MainScreenFragment : Fragment() {
             toggleDoneTasks.setOnClickListener {
                 viewModel.toggleDoneTasks()
             }
+            updateButton.setOnClickListener { viewModel.updateTodos() }
         }
         
         with(recyclerView) {
@@ -117,13 +117,19 @@ class MainScreenFragment : Fragment() {
                 (recyclerView.adapter as TodoListAdapter).submitList(if (action.state) data else data.filter { !it.isDone })
             }
             
-            is MainScreenAction.ShowError -> {
-                Log.e("MainFragment", "Error while performing operation")
-                Snackbar.make(
-                    binding.root, action.text.toString
-                        (requireContext()), Snackbar.LENGTH_SHORT
-                ).show()
-            }
+            is MainScreenAction.ShowError ->
+                with(
+                    Snackbar.make(
+                        binding.root,
+                        action.text.toString(requireContext()),
+                        Snackbar.LENGTH_SHORT
+                    )
+                ) {
+                    setAction(R.string.retry) {
+                        viewModel.retryLastOperation()
+                    }
+                    show()
+                }
         }
     }
     
@@ -137,8 +143,6 @@ class MainScreenFragment : Fragment() {
                 if (state is MainScreenState.Loaded) View.VISIBLE else View.GONE
             if (state is MainScreenState.Loaded) {
                 doneCountText.text = getString(R.string.tasks_done, state.data.count { it.isDone })
-            }
-            if (state is MainScreenState.Loaded) {
                 (rvTodoList.adapter as TodoListAdapter).submitList(state.data)
             }
         }

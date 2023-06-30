@@ -1,6 +1,6 @@
 package ru.kheynov.todoappyandex.core
 
-import android.util.Log
+import kotlinx.coroutines.delay
 import java.util.concurrent.atomic.AtomicInteger
 
 class OperationRepeatHandler(
@@ -10,22 +10,23 @@ class OperationRepeatHandler(
     
     suspend fun <T> repeatOperation(
         repeat: Int = DEFAULT_REPETITIONS,
+        delay: Long = 0,
+        exceptionsCatching: List<Exception> = listOf(
+            OutOfSyncDataException(),
+            ServerSideException(),
+        ),
         block: suspend () -> Resource<T>,
     ): Resource<T> {
         while (repetitions.get() < repeat) {
             val res = block()
-            if (res is Resource.Failure) {
-                try {
-                    val fb = fallbackAction()
-                    Log.e("Handler", fb.toString())
-                } catch (e: Exception) {
-                    Log.e("Handler", e.message.toString())
-                }
+            if (res is Resource.Failure && res.exception in exceptionsCatching) {
+                fallbackAction()
             } else {
                 repetitions.set(INITIAL_REPETITIONS)
                 return res
             }
             repetitions.incrementAndGet()
+            delay(delay)
         }
         return Resource.Failure(UnableToPerformOperation())
     }

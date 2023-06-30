@@ -8,5 +8,8 @@ class BadRequestException : TodoException()
 class UnauthorizedException : TodoException()
 class ServerSideException : TodoException()
 class DuplicateItemException : TodoException()
+class NetworkException : TodoException()
+
+class EmptyFieldException : IllegalStateException()
 
 class UnableToPerformOperation : Exception()

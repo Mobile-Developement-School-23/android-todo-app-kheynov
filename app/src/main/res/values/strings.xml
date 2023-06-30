@@ -22,4 +22,8 @@
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
     <string name="unable_to_perform">Synchronization error</string>
+    <string name="update_todos">Update todos</string>
+    <string name="connection_error">Internet connection error</string>
+    <string name="server_error">Server error occurred</string>
+    <string name="retry">Retry</string>
 </resources>
