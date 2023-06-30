@@ -3,8 +3,8 @@ package ru.kheynov.todoappyandex.data.cache
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import ru.kheynov.todoappyandex.data.util.Converters
 import ru.kheynov.todoappyandex.data.model.local.TodoLocalDTO
+import ru.kheynov.todoappyandex.data.util.Converters
 
 @Database(
     entities = [TodoLocalDTO::class],

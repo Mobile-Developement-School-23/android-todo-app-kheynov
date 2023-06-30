@@ -19,7 +19,7 @@ import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 class SyncTodosWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val params: WorkerParameters,
-    private val repository: TodoItemsRepository,
+    private val repository: TodoItemsRepository
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result = withContext(Dispatchers.IO) {
         Log.i("WorkManager", "Starting job")
@@ -32,7 +32,7 @@ class SyncTodosWorker @AssistedInject constructor(
                     )
                 )
             }
-            
+
             is Resource.Success -> Result.success()
         }
     }

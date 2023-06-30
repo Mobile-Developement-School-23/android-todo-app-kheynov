@@ -11,7 +11,7 @@ class Converters {
         "important" -> TodoUrgency.HIGH
         else -> throw IllegalStateException("Unknown urgency")
     }
-    
+
     @TypeConverter
     fun fromUrgency(value: TodoUrgency) = when (value) {
         TodoUrgency.LOW -> "low"

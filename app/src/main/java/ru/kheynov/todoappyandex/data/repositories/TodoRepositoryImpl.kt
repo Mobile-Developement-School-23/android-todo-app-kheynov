@@ -37,7 +37,7 @@ private fun handleException(e: Exception): Resource.Failure {
                             message.contains("duplicate") -> DuplicateItemException()
                             else -> BadRequestException()
                         }
-                        
+
                         500 -> ServerSideException()
                         404 -> TodoItemNotFoundException()
                         401 -> UnauthorizedException()
@@ -54,17 +54,17 @@ private fun handleException(e: Exception): Resource.Failure {
 
 class TodoRepositoryImpl @Inject constructor(
     private val localDataSource: TodoLocalDAO,
-    private val remoteDataSource: RemoteDataSource,
+    private val remoteDataSource: RemoteDataSource
 ) : TodoItemsRepository {
     private val _todos: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
     override val todos: StateFlow<List<TodoItem>> = _todos.asStateFlow()
-    
+
     init {
         CoroutineScope(Dispatchers.IO).launch {
             _todos.update { localDataSource.getTodos().map(TodoLocalDTO::toDomain) }
         }
     }
-    
+
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
@@ -82,7 +82,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     override suspend fun addTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -94,7 +94,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     override suspend fun deleteTodo(id: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -106,7 +106,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     override suspend fun editTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -118,18 +118,21 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     override suspend fun getTodoById(id: String): Resource<TodoItem> =
         withContext(Dispatchers.IO) {
             return@withContext try {
                 val todo = localDataSource.getTodoById(id)?.toDomain()
-                if (todo == null) Resource.Failure(TodoItemNotFoundException())
-                else Resource.Success(todo)
+                if (todo == null) {
+                    Resource.Failure(TodoItemNotFoundException())
+                } else {
+                    Resource.Success(todo)
+                }
             } catch (e: Exception) {
                 handleException(e)
             }
         }
-    
+
     override suspend fun setTodoState(todoItem: TodoItem, state: Boolean): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {

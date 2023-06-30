@@ -17,12 +17,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-    
+
     override fun onResume() {
         super.onResume()
-        
+
         val syncWorker = PeriodicWorkRequestBuilder<SyncTodosWorker>(
-            8L, TimeUnit.HOURS
+            8L,
+            TimeUnit.HOURS
         ).setConstraints(
             Constraints(
                 requiredNetworkType = NetworkType.NOT_ROAMING

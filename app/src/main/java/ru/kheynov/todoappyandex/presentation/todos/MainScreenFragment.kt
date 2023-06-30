@@ -27,12 +27,12 @@ import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
 class MainScreenFragment : Fragment() {
     private val viewModel: MainScreenViewModel by viewModels()
     private lateinit var navController: NavController
-    
+
     private var _binding: FragmentMainScreenBinding? = null
     private val binding get() = _binding!!
-    
+
     private lateinit var recyclerView: RecyclerView
-    
+
     private val rvAdapter = TodoListAdapter(
         onTodoCheckboxClick = { todoItem, state ->
             viewModel.setTodoState(todoItem, state)
@@ -41,20 +41,20 @@ class MainScreenFragment : Fragment() {
             viewModel.editTodo(todoItem)
         }
     )
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?,
+        savedInstanceState: Bundle?
     ): View {
         _binding = FragmentMainScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         with(binding) {
             fabAddTodo.setOnClickListener {
                 viewModel.addTodo()
@@ -65,44 +65,43 @@ class MainScreenFragment : Fragment() {
             }
             updateButton.setOnClickListener { viewModel.updateTodos() }
         }
-        
+
         with(recyclerView) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rvAdapter
         }
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state.collect(::updateUI)
             }
         }
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.actions.collect(::handleActions)
             }
         }
-        
     }
-    
+
     override fun onResume() {
         super.onResume()
         viewModel.fetchTodos()
     }
-    
+
     private fun handleActions(action: MainScreenAction) {
         when (action) {
             MainScreenAction.NavigateToAdding -> {
                 navController.navigate(R.id.action_todosFragment_to_todoDetailFragment)
             }
-            
+
             is MainScreenAction.NavigateToEditing -> {
                 navController.navigate(
                     R.id.action_todosFragment_to_todoDetailFragment,
                     TodoFragment.createArgumentsForEditing(action.id)
                 )
             }
-            
+
             is MainScreenAction.ToggleDoneTasks -> {
                 with(binding.toggleDoneTasks) {
                     setImageDrawable(
@@ -116,7 +115,7 @@ class MainScreenFragment : Fragment() {
                 val data = (viewModel.state.value as? MainScreenState.Loaded)?.data ?: return
                 (recyclerView.adapter as TodoListAdapter).submitList(if (action.state) data else data.filter { !it.isDone })
             }
-            
+
             is MainScreenAction.ShowError ->
                 with(
                     Snackbar.make(
@@ -132,7 +131,7 @@ class MainScreenFragment : Fragment() {
                 }
         }
     }
-    
+
     private fun updateUI(state: MainScreenState) {
         with(binding) {
             progressCircular.visibility =
@@ -147,7 +146,7 @@ class MainScreenFragment : Fragment() {
             }
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

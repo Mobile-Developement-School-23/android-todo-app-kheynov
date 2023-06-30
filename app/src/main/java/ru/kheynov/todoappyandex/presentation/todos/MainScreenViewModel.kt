@@ -33,36 +33,36 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
-    private val repository: TodoItemsRepository,
+    private val repository: TodoItemsRepository
 ) : ViewModel() {
     private val exceptionHandler = CoroutineExceptionHandler { context, throwable ->
         Log.e("Coroutine", "Error: ", throwable)
         CoroutineScope(context).launch { handleException(throwable) }
     }
-    
+
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
-    
+
     private val handler = OperationRepeatHandler(
-        fallbackAction = { repository.syncTodos() },
+        fallbackAction = { repository.syncTodos() }
     )
-    
+
     private val _actions: Channel<MainScreenAction> = Channel(Channel.BUFFERED)
     val actions: Flow<MainScreenAction> = _actions.receiveAsFlow()
-    
+
     private var isShowingDoneTasks = true
-    
+
     private var lastOperation: (suspend () -> Unit)? = null
-    
+
     private val todos = repository.todos
-    
+
     init {
         viewModelScope.launch {
             repository.syncTodos()
         }
         fetchTodos()
     }
-    
+
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
@@ -78,7 +78,7 @@ class MainScreenViewModel @Inject constructor(
         }
         fetchTodos()
     }
-    
+
     fun updateTodos() {
         viewModelScope.launch(exceptionHandler) {
             _state.update { MainScreenState.Loading }
@@ -86,7 +86,7 @@ class MainScreenViewModel @Inject constructor(
         }
         fetchTodos()
     }
-    
+
     fun fetchTodos() {
         _state.update { (MainScreenState.Loading) }
         viewModelScope.launch(exceptionHandler) {
@@ -95,49 +95,49 @@ class MainScreenViewModel @Inject constructor(
             }
         }
     }
-    
+
     fun editTodo(todoItem: TodoItem) {
         viewModelScope.launch(exceptionHandler) {
             _actions.send(MainScreenAction.NavigateToEditing(todoItem.id))
         }
     }
-    
+
     fun addTodo() {
         viewModelScope.launch(exceptionHandler) {
             _actions.send(MainScreenAction.NavigateToAdding)
         }
     }
-    
+
     fun toggleDoneTasks() {
         viewModelScope.launch(exceptionHandler) {
             isShowingDoneTasks = !isShowingDoneTasks
             _actions.send(MainScreenAction.ToggleDoneTasks(isShowingDoneTasks))
         }
     }
-    
+
     fun retryLastOperation() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation?.invoke()
         }
     }
-    
+
     private suspend fun handleException(
-        e: Throwable,
+        e: Throwable
     ) {
         val errorText =
             when (e) {
                 is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
-                
+
                 is ServerSideException,
                 is BadRequestException,
                 is TodoItemNotFoundException,
-                is DuplicateItemException,
+                is DuplicateItemException
                 -> UiText.StringResource(R.string.server_error)
-                
+
                 is UnableToPerformOperation -> UiText.StringResource(R.string.unable_to_perform)
                 else -> UiText.PlainText(e.localizedMessage?.toString() ?: "Unknown error")
             }
-        
+
         _actions.send(MainScreenAction.ShowError(errorText))
     }
 }

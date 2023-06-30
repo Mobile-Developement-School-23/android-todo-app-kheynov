@@ -12,25 +12,25 @@ private enum class KEYS {
 }
 
 class MetadataStorage @Inject constructor(
-    private val pref: SharedPreferences,
+    private val pref: SharedPreferences
 ) {
     val deviceId: String = pref.getString(KEYS.ID_KEY.name, null) ?: run {
         val id = UUID.randomUUID().toString().subSequence(0, 6).toString()
         saveToPreferences(id, KEYS.ID_KEY)
         id
     }
-    
+
     private val mutex = Mutex()
-    
+
     private var lastKnownRevision: Int? = null
-    
+
     suspend fun saveRevision(revision: Int) {
         mutex.withLock {
             lastKnownRevision = revision
             saveToPreferences(revision, KEYS.REV_KEY)
         }
     }
-    
+
     suspend fun getRevision(): Int {
         return mutex.withLock {
             lastKnownRevision ?: pref.getInt(KEYS.REV_KEY.name, 0).also {
@@ -38,7 +38,7 @@ class MetadataStorage @Inject constructor(
             }
         }
     }
-    
+
     private fun <T> saveToPreferences(value: T?, key: KEYS) {
         val editor: SharedPreferences.Editor = pref.edit()
         when (value) {

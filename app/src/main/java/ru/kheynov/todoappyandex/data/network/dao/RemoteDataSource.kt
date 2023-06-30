@@ -10,14 +10,14 @@ import javax.inject.Inject
 
 class RemoteDataSource @Inject constructor(
     private val api: TodoAPI,
-    private val metadata: MetadataStorage,
+    private val metadata: MetadataStorage
 ) {
     suspend fun fetchTodos(): List<TodoRemoteDTO> {
         val res = api.getTodos()
         res.revision.let { metadata.saveRevision(it) }
         return res.todos
     }
-    
+
     suspend fun pushTodos(todos: List<TodoItem>) {
         val response = api.syncTodosWithServer(
             revision = metadata.getRevision(),
@@ -27,7 +27,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     suspend fun addTodo(todo: TodoItem) {
         val response = api.addTodo(
             revision = metadata.getRevision(),
@@ -35,7 +35,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     suspend fun deleteTodo(id: String) {
         val response = api.deleteTodoById(
             revision = metadata.getRevision(),
@@ -43,7 +43,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     suspend fun editTodo(todo: TodoItem) {
         val response = api.updateTodoById(
             revision = metadata.getRevision(),
@@ -52,7 +52,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     suspend fun setTodoState(todoItem: TodoItem, state: Boolean) {
         val response = api.updateTodoById(
             revision = metadata.getRevision(),
