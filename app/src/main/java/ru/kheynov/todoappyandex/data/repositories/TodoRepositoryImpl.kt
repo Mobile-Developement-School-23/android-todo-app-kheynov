@@ -1,14 +1,17 @@
 package ru.kheynov.todoappyandex.data.repositories
 
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
 import ru.kheynov.todoappyandex.core.BadRequestException
 import ru.kheynov.todoappyandex.core.DuplicateItemException
+import ru.kheynov.todoappyandex.core.NetworkException
 import ru.kheynov.todoappyandex.core.OutOfSyncDataException
 import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.core.ServerSideException
@@ -17,6 +20,7 @@ import ru.kheynov.todoappyandex.core.UnauthorizedException
 import ru.kheynov.todoappyandex.data.cache.TodoLocalDAO
 import ru.kheynov.todoappyandex.data.mappers.toDomain
 import ru.kheynov.todoappyandex.data.mappers.toLocalDTO
+import ru.kheynov.todoappyandex.data.model.local.TodoLocalDTO
 import ru.kheynov.todoappyandex.data.network.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
@@ -41,6 +45,8 @@ private fun handleException(e: Exception): Resource.Failure {
                     }
                 }
         )
+    } else if (e.message?.let { it.contains("hostname") || it.contains("timeout") } == true) {
+        Resource.Failure(NetworkException())
     } else {
         Resource.Failure(e)
     }
@@ -52,6 +58,12 @@ class TodoRepositoryImpl @Inject constructor(
 ) : TodoItemsRepository {
     private val _todos: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
     override val todos: StateFlow<List<TodoItem>> = _todos.asStateFlow()
+    
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            _todos.update { localDataSource.getTodos().map(TodoLocalDTO::toDomain) }
+        }
+    }
     
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
