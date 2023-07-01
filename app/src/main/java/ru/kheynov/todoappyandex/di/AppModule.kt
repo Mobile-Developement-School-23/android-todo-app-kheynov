@@ -3,11 +3,13 @@ package ru.kheynov.todoappyandex.di
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
@@ -60,6 +62,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideTodosApi(retrofit: Retrofit): TodoAPI = retrofit.create(TodoAPI::class.java)
+
+    @Provides
+    fun provideConnectivityManager(@ApplicationContext context: Context) =
+        context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
 
     @Provides
     @Singleton

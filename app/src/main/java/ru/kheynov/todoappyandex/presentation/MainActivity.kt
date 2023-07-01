@@ -9,19 +9,29 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import dagger.hilt.android.AndroidEntryPoint
 import ru.kheynov.todoappyandex.R
+import ru.kheynov.todoappyandex.core.NetworkListener
 import ru.kheynov.todoappyandex.workers.SyncTodosWorker
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var networkListener: NetworkListener
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
 
+    override fun onStart() {
+        networkListener.start()
+        super.onStart()
+    }
+
     override fun onResume() {
         super.onResume()
-
         val syncWorker = PeriodicWorkRequestBuilder<SyncTodosWorker>(
             8L,
             TimeUnit.HOURS
@@ -34,7 +44,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        super.onStop()
         val syncWorker = OneTimeWorkRequestBuilder<SyncTodosWorker>()
             .setConstraints(
                 Constraints(
@@ -43,5 +52,7 @@ class MainActivity : AppCompatActivity() {
             ).addTag("INTERNET_LOST_N_FOUND")
             .build()
         WorkManager.getInstance(this).enqueue(syncWorker)
+        networkListener.stop()
+        super.onStop()
     }
 }
