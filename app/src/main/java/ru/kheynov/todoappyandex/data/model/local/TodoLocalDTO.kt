@@ -12,5 +12,5 @@ data class TodoLocalDTO(
     val deadline: Long? = null,
     val isDone: Boolean,
     val createdAt: Long,
-    val editedAt: Long
+    val editedAt: Long,
 )

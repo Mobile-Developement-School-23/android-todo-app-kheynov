@@ -16,29 +16,29 @@ import ru.kheynov.todoappyandex.data.model.remote.UpsertTodoRequest
 interface TodoAPI {
     @GET("list")
     suspend fun getTodos(): TodoListResponse
-
+    
     @PATCH("list")
     suspend fun syncTodosWithServer(
         @Header("X-Last-Known-Revision") revision: Int,
-        @Body request: PushListToServerRequest
+        @Body request: PushListToServerRequest,
     ): TodoListResponse
-
+    
     @POST("list")
     suspend fun addTodo(
         @Header("X-Last-Known-Revision") revision: Int,
-        @Body request: UpsertTodoRequest
+        @Body request: UpsertTodoRequest,
     ): TodoItemResponse
-
+    
     @PUT("list/{id}")
     suspend fun updateTodoById(
         @Path("id") id: String,
         @Header("X-Last-Known-Revision") revision: Int,
-        @Body request: UpsertTodoRequest
+        @Body request: UpsertTodoRequest,
     ): TodoItemResponse
-
+    
     @DELETE("list/{id}")
     suspend fun deleteTodoById(
         @Path("id") id: String,
-        @Header("X-Last-Known-Revision") revision: Int
+        @Header("X-Last-Known-Revision") revision: Int,
     ): TodoItemResponse
 }

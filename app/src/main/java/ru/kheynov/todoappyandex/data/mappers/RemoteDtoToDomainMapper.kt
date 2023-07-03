@@ -27,7 +27,7 @@ fun TodoRemoteDTO.toDomain(): TodoItem =
     )
 
 fun TodoItem.toRemoteDTO(
-    deviceId: String
+    deviceId: String,
 ) = TodoRemoteDTO(
     id = id,
     text = text,
@@ -36,9 +36,9 @@ fun TodoItem.toRemoteDTO(
     done = isDone,
     createdAt = createdAt.toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
     updatedAt = (
-        editedAt
-            ?: createdAt
-        ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
+            editedAt
+                ?: createdAt
+            ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
     updatedBy = deviceId,
     color = color
 )

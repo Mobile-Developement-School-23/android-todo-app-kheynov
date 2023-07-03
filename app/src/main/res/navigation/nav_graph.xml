@@ -14,13 +14,12 @@
             app:enterAnim="@anim/slide_left"
             app:exitAnim="@anim/wait_anim"
             app:popEnterAnim="@anim/wait_anim"
-            app:popExitAnim="@anim/slide_right"/>
+            app:popExitAnim="@anim/slide_right" />
 
     </fragment>
 
     <fragment
         android:id="@+id/editTodoFragment"
         android:name="ru.kheynov.todoappyandex.presentation.editor.TodoFragment"
-        android:label="Todo editing">
-    </fragment>
+        android:label="Todo editing" />
 </navigation>

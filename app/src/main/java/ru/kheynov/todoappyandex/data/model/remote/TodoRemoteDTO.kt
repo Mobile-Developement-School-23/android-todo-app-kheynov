@@ -13,5 +13,5 @@ data class TodoRemoteDTO(
     val deadline: Long?,
     @SerialName("created_at") val createdAt: Long,
     @SerialName("changed_at") val updatedAt: Long,
-    @SerialName("last_updated_by") val updatedBy: String
+    @SerialName("last_updated_by") val updatedBy: String,
 )

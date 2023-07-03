@@ -13,17 +13,17 @@ import javax.inject.Inject
 
 class NetworkListener @Inject constructor(
     private val connectivityManager: ConnectivityManager,
-    private val repository: TodoItemsRepository
+    private val repository: TodoItemsRepository,
 ) {
-
+    
     private val scope = CoroutineScope(SupervisorJob() + CoroutineName("NetworkListenerScope"))
-
+    
     private val networkRequest = NetworkRequest.Builder()
         .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
         .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
         .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
         .build()
-
+    
     private val callback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             super.onAvailable(network)
@@ -32,11 +32,11 @@ class NetworkListener @Inject constructor(
             }
         }
     }
-
+    
     fun start() {
         connectivityManager.requestNetwork(networkRequest, callback)
     }
-
+    
     fun stop() {
         connectivityManager.unregisterNetworkCallback(callback)
     }

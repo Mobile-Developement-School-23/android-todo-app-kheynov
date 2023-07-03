@@ -8,6 +8,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.http.HTTP_BAD_REQUEST
+import okhttp3.internal.http.HTTP_INTERNAL_SERVER_ERROR
+import okhttp3.internal.http.HTTP_NOT_FOUND
+import okhttp3.internal.http.HTTP_UNAUTHORIZED
 import retrofit2.HttpException
 import ru.kheynov.todoappyandex.core.BadRequestException
 import ru.kheynov.todoappyandex.core.DuplicateItemException
@@ -32,15 +36,15 @@ private fun handleException(e: Exception): Resource.Failure {
             e.response()?.errorBody()?.string().toString()
                 .let { message ->
                     when (e.code()) {
-                        400 -> when {
+                        HTTP_BAD_REQUEST -> when {
                             message.contains("unsynchronized") -> OutOfSyncDataException()
                             message.contains("duplicate") -> DuplicateItemException()
                             else -> BadRequestException()
                         }
-
-                        500 -> ServerSideException()
-                        404 -> TodoItemNotFoundException()
-                        401 -> UnauthorizedException()
+                        
+                        HTTP_INTERNAL_SERVER_ERROR -> ServerSideException()
+                        HTTP_NOT_FOUND -> TodoItemNotFoundException()
+                        HTTP_UNAUTHORIZED -> UnauthorizedException()
                         else -> e
                     }
                 }
@@ -54,17 +58,17 @@ private fun handleException(e: Exception): Resource.Failure {
 
 class TodoRepositoryImpl @Inject constructor(
     private val localDataSource: TodoLocalDAO,
-    private val remoteDataSource: RemoteDataSource
+    private val remoteDataSource: RemoteDataSource,
 ) : TodoItemsRepository {
     private val _todos: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
     override val todos: StateFlow<List<TodoItem>> = _todos.asStateFlow()
-
+    
     init {
         CoroutineScope(Dispatchers.IO).launch {
             _todos.update { localDataSource.getTodos().map(TodoLocalDTO::toDomain) }
         }
     }
-
+    
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
@@ -82,7 +86,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-
+    
     override suspend fun addTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -94,7 +98,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-
+    
     override suspend fun deleteTodo(id: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -106,7 +110,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-
+    
     override suspend fun editTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -118,7 +122,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-
+    
     override suspend fun getTodoById(id: String): Resource<TodoItem> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -132,7 +136,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-
+    
     override suspend fun setTodoState(todoItem: TodoItem, state: Boolean): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {

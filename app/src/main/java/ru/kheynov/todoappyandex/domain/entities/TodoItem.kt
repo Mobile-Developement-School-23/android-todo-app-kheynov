@@ -11,5 +11,5 @@ data class TodoItem(
     var isDone: Boolean,
     var color: String? = null,
     var createdAt: LocalDateTime,
-    var editedAt: LocalDateTime? = null
+    var editedAt: LocalDateTime? = null,
 )

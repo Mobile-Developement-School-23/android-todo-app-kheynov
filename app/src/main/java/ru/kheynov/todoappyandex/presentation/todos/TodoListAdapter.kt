@@ -18,24 +18,25 @@ import java.time.format.FormatStyle
 class TodoListAdapter(
     val onTodoLongClick: (TodoItem) -> Unit = {},
     val onTodoDetailsClick: (TodoItem) -> Unit = {},
-    val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> }
+    val onTodoCheckboxClick: (item: TodoItem, isChecked: Boolean) -> Unit = { _, _ -> },
 ) : ListAdapter<TodoItem, TodoListAdapter.TodoViewHolder>(DiffCallback()) {
-
+    
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TodoViewHolder {
         val binding =
             TodosListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return TodoViewHolder(binding)
     }
-
+    
     override fun onBindViewHolder(holder: TodoViewHolder, position: Int) {
         holder.bind(currentList[position])
     }
-
+    
     override fun getItemCount(): Int = currentList.size
-
+    
     inner class TodoViewHolder(private val binding: TodosListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
+   
+        @Suppress("CyclomaticComplexMethod")
         fun bind(todo: TodoItem) {
             binding.apply {
                 root.setOnLongClickListener {
@@ -50,7 +51,7 @@ class TodoListAdapter(
                     }
                     text = todo.text
                 }
-
+                
                 with(dateText) {
                     visibility = if (todo.deadline == null) View.GONE else View.VISIBLE
                     val dateTime = todo.deadline
@@ -61,16 +62,16 @@ class TodoListAdapter(
                         )
                     }
                 }
-
+                
                 with(checkBox) {
                     isChecked = todo.isDone
                     setOnClickListener { onTodoCheckboxClick(todo, !todo.isDone) }
                 }
-
+                
                 infoIcon.setOnClickListener {
                     onTodoDetailsClick(todo)
                 }
-
+                
                 with(urgencyIndicator) {
                     visibility = when (todo.urgency) {
                         TodoUrgency.LOW -> View.VISIBLE
@@ -83,7 +84,7 @@ class TodoListAdapter(
                                 context,
                                 R.drawable.baseline_arrow_downward_24
                             )
-
+                            
                             TodoUrgency.HIGH -> ContextCompat.getDrawable(
                                 context,
                                 R.drawable.ic_high_urgency
@@ -101,11 +102,11 @@ class TodoListAdapter(
             }
         }
     }
-
+    
     private class DiffCallback : DiffUtil.ItemCallback<TodoItem>() {
         override fun areItemsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
             oldItem.id == newItem.id
-
+        
         override fun areContentsTheSame(oldItem: TodoItem, newItem: TodoItem): Boolean =
             oldItem == newItem
     }

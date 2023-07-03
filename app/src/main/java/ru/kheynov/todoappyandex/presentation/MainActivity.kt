@@ -14,26 +14,28 @@ import ru.kheynov.todoappyandex.workers.SyncTodosWorker
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+private const val PERIODIC_SYNC_INTERVAL = 8L
+
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
+    
     @Inject
     lateinit var networkListener: NetworkListener
-
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
-
+    
     override fun onStart() {
         networkListener.start()
         super.onStart()
     }
-
+    
     override fun onResume() {
         super.onResume()
         val syncWorker = PeriodicWorkRequestBuilder<SyncTodosWorker>(
-            8L,
+            PERIODIC_SYNC_INTERVAL,
             TimeUnit.HOURS
         ).setConstraints(
             Constraints(
@@ -42,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         ).build()
         WorkManager.getInstance(this).enqueue(syncWorker)
     }
-
+    
     override fun onStop() {
         val syncWorker = OneTimeWorkRequestBuilder<SyncTodosWorker>()
             .setConstraints(
@@ -56,3 +58,5 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
     }
 }
+
+

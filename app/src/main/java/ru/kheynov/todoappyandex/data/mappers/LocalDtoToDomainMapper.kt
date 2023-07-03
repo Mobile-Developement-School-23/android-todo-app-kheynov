@@ -31,7 +31,7 @@ fun TodoItem.toLocalDTO() = TodoLocalDTO(
     isDone = isDone,
     createdAt = createdAt.toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now())),
     editedAt = (
-        editedAt
-            ?: createdAt
-        ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now()))
+            editedAt
+                ?: createdAt
+            ).toEpochSecond(ZoneId.systemDefault().rules.getOffset(Instant.now()))
 )
