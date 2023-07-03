@@ -8,6 +8,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+/**
+ * Mapper from remote DTO to domain entity
+ */
 fun TodoRemoteDTO.toDomain(): TodoItem =
     TodoItem(
         id = id,
@@ -26,6 +29,9 @@ fun TodoRemoteDTO.toDomain(): TodoItem =
         color = color
     )
 
+/**
+ * Mapper from domain entity to remote DTO
+ */
 fun TodoItem.toRemoteDTO(
     deviceId: String,
 ) = TodoRemoteDTO(

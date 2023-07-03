@@ -5,6 +5,9 @@ import androidx.room.Query
 import androidx.room.Upsert
 import ru.kheynov.todoappyandex.data.model.local.TodoLocalDTO
 
+/**
+ * Data Access Object for the SQLite todos table.
+ */
 @Dao
 interface TodoLocalDAO {
     @Query("SELECT * FROM todo")

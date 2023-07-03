@@ -3,6 +3,9 @@ package ru.kheynov.todoappyandex.domain.entities
 import java.time.LocalDate
 import java.time.LocalDateTime
 
+/**
+ * Todo item domain entity
+ */
 data class TodoItem(
     val id: String,
     var text: String,

@@ -11,6 +11,11 @@ import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 import javax.inject.Inject
 
+/**
+ * [NetworkListener] observes network state and syncs todos when network is available
+ * @param connectivityManager [ConnectivityManager]
+ * @param repository [TodoItemsRepository]
+ */
 class NetworkListener @Inject constructor(
     private val connectivityManager: ConnectivityManager,
     private val repository: TodoItemsRepository,
@@ -33,10 +38,16 @@ class NetworkListener @Inject constructor(
         }
     }
     
+    /**
+     * Starts listening for network state changes
+     */
     fun start() {
         connectivityManager.requestNetwork(networkRequest, callback)
     }
     
+    /**
+     * Stops listening for network state changes
+     */
     fun stop() {
         connectivityManager.unregisterNetworkCallback(callback)
     }

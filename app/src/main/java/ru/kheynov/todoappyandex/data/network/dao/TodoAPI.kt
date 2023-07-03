@@ -13,6 +13,9 @@ import ru.kheynov.todoappyandex.data.model.remote.TodoItemResponse
 import ru.kheynov.todoappyandex.data.model.remote.TodoListResponse
 import ru.kheynov.todoappyandex.data.model.remote.UpsertTodoRequest
 
+/**
+ * Retrofit API interface
+ */
 interface TodoAPI {
     @GET("list")
     suspend fun getTodos(): TodoListResponse

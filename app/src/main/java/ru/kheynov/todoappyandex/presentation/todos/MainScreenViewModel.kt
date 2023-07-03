@@ -31,6 +31,9 @@ import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
 import javax.inject.Inject
 
+/**
+ * Main screen view model
+ */
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
@@ -127,7 +130,7 @@ class MainScreenViewModel @Inject constructor(
         val errorText =
             when (e) {
                 is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
-    
+                
                 is ServerSideException,
                 is BadRequestException,
                 is TodoItemNotFoundException,

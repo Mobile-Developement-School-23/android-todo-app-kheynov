@@ -15,6 +15,12 @@ import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.core.ServerSideException
 import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
 
+/**
+ * Sync todos worker – worker that syncs todos with server
+ * @param context context
+ * @param params worker params
+ * @param repository todo items repository
+ */
 @HiltWorker
 class SyncTodosWorker @AssistedInject constructor(
     @Assisted val context: Context,

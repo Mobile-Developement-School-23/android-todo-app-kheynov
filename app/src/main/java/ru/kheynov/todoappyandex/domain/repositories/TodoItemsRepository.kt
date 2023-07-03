@@ -4,6 +4,9 @@ import kotlinx.coroutines.flow.StateFlow
 import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.domain.entities.TodoItem
 
+/**
+ * Todo repository interface
+ */
 interface TodoItemsRepository {
     val todos: StateFlow<List<TodoItem>>
     suspend fun syncTodos(): Resource<Unit>

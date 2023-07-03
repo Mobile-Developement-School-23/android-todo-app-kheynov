@@ -7,6 +7,9 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
 
+/**
+ * Mapper from local DTO to domain entity
+ */
 fun TodoLocalDTO.toDomain() = TodoItem(
     id = id,
     text = text,
@@ -23,6 +26,9 @@ fun TodoLocalDTO.toDomain() = TodoItem(
     )
 )
 
+/**
+ * Mapper from domain entity to local DTO
+ */
 fun TodoItem.toLocalDTO() = TodoLocalDTO(
     id = id,
     text = text,

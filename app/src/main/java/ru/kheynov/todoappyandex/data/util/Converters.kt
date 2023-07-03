@@ -3,6 +3,9 @@ package ru.kheynov.todoappyandex.data.util
 import androidx.room.TypeConverter
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 
+/**
+ * Converters for Room database
+ */
 class Converters {
     @TypeConverter
     fun toUrgency(value: String) = when (value) {

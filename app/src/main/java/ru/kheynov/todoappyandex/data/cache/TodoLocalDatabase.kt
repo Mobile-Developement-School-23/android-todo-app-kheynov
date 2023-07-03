@@ -6,6 +6,9 @@ import androidx.room.TypeConverters
 import ru.kheynov.todoappyandex.data.model.local.TodoLocalDTO
 import ru.kheynov.todoappyandex.data.util.Converters
 
+/**
+ * The Room Database that contains the todos table.
+ */
 @Database(
     entities = [TodoLocalDTO::class],
     version = 1,

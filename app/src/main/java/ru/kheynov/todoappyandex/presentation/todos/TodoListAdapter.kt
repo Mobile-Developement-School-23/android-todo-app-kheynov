@@ -15,6 +15,12 @@ import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 
+/**
+ * Todo list adapter
+ * @property onTodoLongClick [TodoItem] -> [Unit] - todo long click callback
+ * @property onTodoDetailsClick [TodoItem] -> [Unit] - todo details click callback
+ * @property onTodoCheckboxClick (item: [TodoItem], isChecked: [Boolean]) -> [Unit] - todo checkbox click callback
+ */
 class TodoListAdapter(
     val onTodoLongClick: (TodoItem) -> Unit = {},
     val onTodoDetailsClick: (TodoItem) -> Unit = {},
@@ -33,9 +39,17 @@ class TodoListAdapter(
     
     override fun getItemCount(): Int = currentList.size
     
+    /**
+     * Todo view holder
+     * @property binding [TodosListItemBinding] - binding
+     */
     inner class TodoViewHolder(private val binding: TodosListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-   
+        
+        /**
+         * Binds todo item to view holder
+         * @param todo [TodoItem] - todo item
+         */
         @Suppress("CyclomaticComplexMethod")
         fun bind(todo: TodoItem) {
             binding.apply {

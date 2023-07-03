@@ -3,6 +3,9 @@ package ru.kheynov.todoappyandex.data.model.remote
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
+/**
+ * Remote DTO for todo
+ */
 @Serializable
 data class TodoRemoteDTO(
     val id: String,

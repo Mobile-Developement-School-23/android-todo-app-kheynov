@@ -4,6 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.kheynov.todoappyandex.domain.entities.TodoUrgency
 
+/**
+ * Local DTO for todo
+ */
 @Entity(tableName = "todo")
 data class TodoLocalDTO(
     @PrimaryKey val id: String,

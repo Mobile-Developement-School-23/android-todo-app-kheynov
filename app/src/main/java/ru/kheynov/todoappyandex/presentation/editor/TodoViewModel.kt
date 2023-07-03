@@ -35,6 +35,10 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
+/**
+ * Details screen view model
+ * @property repository [TodoItemsRepository]
+ */
 @HiltViewModel
 class TodoViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
@@ -153,10 +157,10 @@ class TodoViewModel @Inject constructor(
     private suspend fun handleException(
         e: Throwable,
     ) {
-        val errorText =
+        val errorText: UiText =
             when (e) {
                 is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
-    
+                
                 is ServerSideException,
                 is BadRequestException,
                 is TodoItemNotFoundException,

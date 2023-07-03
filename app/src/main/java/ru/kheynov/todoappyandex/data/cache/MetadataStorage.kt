@@ -13,6 +13,10 @@ private enum class KEYS {
 
 private const val DEVICE_ID_LENGTH = 6
 
+/**
+ * Class that stores metadata such as device id and last known data revision in SharedPreferences
+ * @param pref SharedPreferences instance
+ */
 class MetadataStorage @Inject constructor(
     private val pref: SharedPreferences,
 ) {

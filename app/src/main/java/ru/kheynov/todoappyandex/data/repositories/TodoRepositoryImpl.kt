@@ -56,6 +56,11 @@ private fun handleException(e: Exception): Resource.Failure {
     }
 }
 
+/**
+ * Todo repository implementation
+ * @property localDataSource [TodoLocalDAO]
+ * @property remoteDataSource [RemoteDataSource]
+ */
 class TodoRepositoryImpl @Inject constructor(
     private val localDataSource: TodoLocalDAO,
     private val remoteDataSource: RemoteDataSource,
@@ -69,6 +74,12 @@ class TodoRepositoryImpl @Inject constructor(
         }
     }
     
+    /**
+     * Synchronizes todos
+     * Fetches todos from remote data source and pushes them to local data source
+     * Than pushes merged local todos to remote data source
+     * @return [Resource]
+     */
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
@@ -87,6 +98,12 @@ class TodoRepositoryImpl @Inject constructor(
             }
         }
     
+    /**
+     * Adds todo
+     * Adds todo to local data source and pushes it to remote data source
+     * @param todo [TodoItem]
+     * @return [Resource]
+     */
     override suspend fun addTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -99,6 +116,12 @@ class TodoRepositoryImpl @Inject constructor(
             }
         }
     
+    /**
+     * Deletes todo
+     * Deletes todo from local data source and pushes it to remote data source
+     * @param id [String]
+     * @return [Resource]
+     */
     override suspend fun deleteTodo(id: String): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -111,6 +134,12 @@ class TodoRepositoryImpl @Inject constructor(
             }
         }
     
+    /**
+     * Edits todo
+     * Edits todo in local data source and pushes it to remote data source
+     * @param todo [TodoItem]
+     * @return [Resource]
+     */
     override suspend fun editTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -123,6 +152,11 @@ class TodoRepositoryImpl @Inject constructor(
             }
         }
     
+    /**
+     * Gets todo by id
+     * @param id [String]
+     * @return [Resource]
+     */
     override suspend fun getTodoById(id: String): Resource<TodoItem> =
         withContext(Dispatchers.IO) {
             return@withContext try {
@@ -137,6 +171,13 @@ class TodoRepositoryImpl @Inject constructor(
             }
         }
     
+    /**
+     * Sets todo state
+     * Sets todo state in local data source and pushes it to remote data source
+     * @param todoItem [TodoItem]
+     * @param state [Boolean]
+     * @return [Resource]
+     */
     override suspend fun setTodoState(todoItem: TodoItem, state: Boolean): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
