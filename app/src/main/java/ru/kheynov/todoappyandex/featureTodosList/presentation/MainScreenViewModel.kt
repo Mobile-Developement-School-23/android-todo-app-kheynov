@@ -31,9 +31,6 @@ import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainS
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState
 import javax.inject.Inject
 
-/**
- * Main screen view model
- */
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val repository: TodoItemsRepository,

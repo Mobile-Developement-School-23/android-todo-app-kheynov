@@ -29,9 +29,6 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
 
-/**
- * Details screen fragment
- */
 @AndroidEntryPoint
 class TodoFragment : Fragment() {
     private val viewModel: TodoViewModel by viewModels()

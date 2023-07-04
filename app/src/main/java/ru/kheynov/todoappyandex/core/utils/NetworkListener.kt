@@ -38,16 +38,10 @@ class NetworkListener @Inject constructor(
         }
     }
     
-    /**
-     * Starts listening for network state changes
-     */
     fun start() {
         connectivityManager.requestNetwork(networkRequest, callback)
     }
     
-    /**
-     * Stops listening for network state changes
-     */
     fun stop() {
         connectivityManager.unregisterNetworkCallback(callback)
     }

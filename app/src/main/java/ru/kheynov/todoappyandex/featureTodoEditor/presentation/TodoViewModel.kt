@@ -35,10 +35,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
-/**
- * Details screen view model
- * @property repository [TodoItemsRepository]
- */
 @HiltViewModel
 class TodoViewModel @Inject constructor(
     private val repository: TodoItemsRepository,

@@ -23,9 +23,6 @@ import ru.kheynov.todoappyandex.featureTodoEditor.presentation.TodoFragment
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState
 
-/**
- * Main screen fragment
- */
 @AndroidEntryPoint
 class MainScreenFragment : Fragment() {
     private val viewModel: MainScreenViewModel by viewModels()
