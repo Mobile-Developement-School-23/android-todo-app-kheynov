@@ -16,12 +16,12 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import ru.kheynov.todoappyandex.data.cache.TodoLocalDatabase
-import ru.kheynov.todoappyandex.data.network.dao.RemoteDataSource
-import ru.kheynov.todoappyandex.data.network.dao.TodoAPI
-import ru.kheynov.todoappyandex.data.network.interceptors.TokenInterceptor
-import ru.kheynov.todoappyandex.data.repositories.TodoRepositoryImpl
-import ru.kheynov.todoappyandex.domain.repositories.TodoItemsRepository
+import ru.kheynov.todoappyandex.core.data.cache.TodoLocalDatabase
+import ru.kheynov.todoappyandex.core.data.network.dao.RemoteDataSource
+import ru.kheynov.todoappyandex.core.data.network.dao.TodoAPI
+import ru.kheynov.todoappyandex.core.data.network.interceptors.TokenInterceptor
+import ru.kheynov.todoappyandex.core.data.repositories.TodoRepositoryImpl
+import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import javax.inject.Singleton
 
 @OptIn(ExperimentalSerializationApi::class)

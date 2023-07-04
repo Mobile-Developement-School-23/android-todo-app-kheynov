@@ -319,4 +319,4 @@ obj/
 !/gradle/wrapper/gradle-wrapper.jar
 
 # End of https://www.toptal.com/developers/gitignore/api/android,androidstudio,intellij+all,macos,gradle,kotlin
-/src/main/java/ru/kheynov/todoappyandex/data/util/ApiToken.kt
+/src/main/java/ru/kheynov/todoappyandex/core/data/util/ApiToken.kt

@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/todosFragment"
-        android:name="ru.kheynov.todoappyandex.presentation.todos.MainScreenFragment"
+        android:name="ru.kheynov.todoappyandex.featureTodosList.presentation.MainScreenFragment"
         android:label="Todos list">
         <action
             android:id="@+id/action_todosFragment_to_todoDetailFragment"
@@ -20,6 +20,6 @@
 
     <fragment
         android:id="@+id/editTodoFragment"
-        android:name="ru.kheynov.todoappyandex.presentation.editor.TodoFragment"
+        android:name="ru.kheynov.todoappyandex.featureTodoEditor.presentation.TodoFragment"
         android:label="Todo editing" />
 </navigation>
