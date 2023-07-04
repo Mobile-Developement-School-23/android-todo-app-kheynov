@@ -19,7 +19,7 @@ import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.core.BadRequestException
 import ru.kheynov.todoappyandex.core.DuplicateItemException
 import ru.kheynov.todoappyandex.core.NetworkException
-import ru.kheynov.todoappyandex.core.OperationRepeatHandler
+import ru.kheynov.todoappyandex.core.OperationHandlerWithFallback
 import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.core.ServerSideException
 import ru.kheynov.todoappyandex.core.TodoItemNotFoundException
@@ -46,7 +46,7 @@ class MainScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
     
-    private val handler = OperationRepeatHandler(
+    private val operationHandler = OperationHandlerWithFallback(
         fallbackAction = { repository.syncTodos() }
     )
     
@@ -69,7 +69,7 @@ class MainScreenViewModel @Inject constructor(
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
-                val res = handler.repeatOperation {
+                val res = operationHandler.executeOperation {
                     repository.setTodoState(todoItem, state)
                 }
                 when (res) {

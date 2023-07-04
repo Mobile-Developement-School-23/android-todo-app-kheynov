@@ -1,18 +1,17 @@
 package ru.kheynov.todoappyandex.core
 
 import kotlinx.coroutines.delay
-import java.util.concurrent.atomic.AtomicInteger
 
 /**
- * [OperationRepeatHandler] repeats operation [repeat] times with [delay] between each attempt
+ * [OperationHandlerWithFallback] tries to perform operation, if it wasn't successful execute
+ * [fallbackAction]
+ * and repeat it [repeat] times with [delay] between each attempt
  * @param fallbackAction action to perform if operation failed
  */
 
-class OperationRepeatHandler(
+class OperationHandlerWithFallback(
     val fallbackAction: suspend () -> Resource<Unit>,
 ) {
-    private val repetitions = AtomicInteger(INITIAL_REPETITIONS)
-    
     /**
      * Repeats operation [repeat] times with [delay] between each attempt
      * @param repeat number of repetitions
@@ -21,7 +20,7 @@ class OperationRepeatHandler(
      * @param block operation to perform
      * @return [Resource] with result of operation
      */
-    suspend fun <T> repeatOperation(
+    suspend fun <T> executeOperation(
         repeat: Int = DEFAULT_REPETITIONS,
         delay: Long = 0,
         exceptionsCatching: List<Exception> = listOf(
@@ -30,14 +29,13 @@ class OperationRepeatHandler(
         ),
         block: suspend () -> Resource<T>,
     ): Resource<T> {
-        while (repetitions.getAndIncrement() < repeat) {
+        var repetitions = INITIAL_REPETITIONS
+        while (repetitions < repeat) {
             val res = block()
             if (res is Resource.Failure && res.exception in exceptionsCatching) {
                 fallbackAction()
-            } else {
-                repetitions.set(INITIAL_REPETITIONS)
-                return res
-            }
+            } else return res
+            repetitions++
             delay(delay)
         }
         return Resource.Failure(UnableToPerformOperation())

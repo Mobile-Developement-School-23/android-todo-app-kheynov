@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.internal.http.HTTP_BAD_GATEWAY
 import okhttp3.internal.http.HTTP_BAD_REQUEST
 import okhttp3.internal.http.HTTP_INTERNAL_SERVER_ERROR
 import okhttp3.internal.http.HTTP_NOT_FOUND
@@ -42,7 +43,7 @@ private fun handleException(e: Exception): Resource.Failure {
                             else -> BadRequestException()
                         }
                         
-                        HTTP_INTERNAL_SERVER_ERROR -> ServerSideException()
+                        HTTP_INTERNAL_SERVER_ERROR, HTTP_BAD_GATEWAY -> ServerSideException()
                         HTTP_NOT_FOUND -> TodoItemNotFoundException()
                         HTTP_UNAUTHORIZED -> UnauthorizedException()
                         else -> e

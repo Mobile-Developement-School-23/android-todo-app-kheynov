@@ -20,7 +20,7 @@ import ru.kheynov.todoappyandex.core.BadRequestException
 import ru.kheynov.todoappyandex.core.DuplicateItemException
 import ru.kheynov.todoappyandex.core.EmptyFieldException
 import ru.kheynov.todoappyandex.core.NetworkException
-import ru.kheynov.todoappyandex.core.OperationRepeatHandler
+import ru.kheynov.todoappyandex.core.OperationHandlerWithFallback
 import ru.kheynov.todoappyandex.core.Resource
 import ru.kheynov.todoappyandex.core.ServerSideException
 import ru.kheynov.todoappyandex.core.TodoItemNotFoundException
@@ -58,7 +58,7 @@ class TodoViewModel @Inject constructor(
     )
     val state: StateFlow<TodoItem> = _state.asStateFlow()
     
-    private val handler = OperationRepeatHandler(
+    private val handler = OperationHandlerWithFallback(
         fallbackAction = { repository.syncTodos() }
     )
     
@@ -110,18 +110,18 @@ class TodoViewModel @Inject constructor(
     fun saveTodo() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
-                val handleResult = handler.repeatOperation {
+                val handleResult = handler.executeOperation {
                     if (_state.value.text.isBlank()) {
                         _actions.send(
                             AddEditAction.ShowError(UiText.StringResource(R.string.title_cannot_be_empty))
                         )
-                        return@repeatOperation Resource.Failure(EmptyFieldException())
+                        return@executeOperation Resource.Failure(EmptyFieldException())
                     } else if (state.value.id.isBlank()) {
                         repository.addTodo(_state.value.copy(id = UUID.randomUUID().toString()))
-                        return@repeatOperation Resource.Success(Unit)
+                        return@executeOperation Resource.Success(Unit)
                     } else {
                         repository.editTodo(_state.value.copy(editedAt = LocalDateTime.now()))
-                        return@repeatOperation Resource.Success(Unit)
+                        return@executeOperation Resource.Success(Unit)
                     }
                 }
                 when (handleResult) {
@@ -136,7 +136,7 @@ class TodoViewModel @Inject constructor(
     fun deleteTodo() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
-                val handleResult = handler.repeatOperation {
+                val handleResult = handler.executeOperation {
                     repository.deleteTodo(_state.value.id)
                 }
                 when (handleResult) {
