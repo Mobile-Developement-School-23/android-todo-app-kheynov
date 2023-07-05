@@ -46,7 +46,6 @@ class MainScreenViewModel @Inject constructor(
     private val operationHandler = OperationHandlerWithFallback(
         fallbackAction = {
             repository.syncTodos()
-            fetchTodos()
         }
     )
     
@@ -57,11 +56,15 @@ class MainScreenViewModel @Inject constructor(
     
     private var lastOperation: (suspend () -> Unit)? = null
     
+    private val todos = repository.todos
+    
     init {
         viewModelScope.launch {
             repository.syncTodos()
+            todos.collect { todos ->
+                _state.update { MainScreenState.Loaded(todos) }
+            }
         }
-        fetchTodos()
     }
     
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
@@ -78,7 +81,6 @@ class MainScreenViewModel @Inject constructor(
             }
             lastOperation?.invoke()
         }
-        fetchTodos()
     }
     
     fun updateTodos() {
@@ -86,15 +88,8 @@ class MainScreenViewModel @Inject constructor(
             _state.update { MainScreenState.Loading }
             repository.syncTodos()
         }
-        fetchTodos()
     }
     
-    fun fetchTodos() {
-        _state.update { (MainScreenState.Loading) }
-        viewModelScope.launch(exceptionHandler) {
-            _state.update { (MainScreenState.Loaded(repository.todos.value)) }
-        }
-    }
     
     fun editTodo(todoItem: TodoItem) {
         viewModelScope.launch(exceptionHandler) {

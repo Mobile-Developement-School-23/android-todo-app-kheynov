@@ -1,5 +1,6 @@
 package ru.kheynov.todoappyandex.core.domain.repositories
 
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
@@ -8,7 +9,7 @@ import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
  * Todo repository interface
  */
 interface TodoItemsRepository {
-    val todos: StateFlow<List<TodoItem>>
+    val todos: Flow<List<TodoItem>>
     suspend fun syncTodos(): Resource<Unit>
     suspend fun addTodo(todo: TodoItem): Resource<Unit>
     suspend fun deleteTodo(id: String): Resource<Unit>

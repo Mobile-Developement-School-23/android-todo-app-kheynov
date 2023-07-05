@@ -86,7 +86,6 @@ class MainScreenFragment : Fragment() {
     
     override fun onResume() {
         super.onResume()
-        viewModel.fetchTodos()
     }
     
     private fun handleActions(action: MainScreenAction) {

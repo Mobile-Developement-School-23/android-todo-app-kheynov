@@ -1,12 +1,8 @@
 package ru.kheynov.todoappyandex.core.data.repositories
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import okhttp3.internal.http.HTTP_BAD_GATEWAY
 import okhttp3.internal.http.HTTP_BAD_REQUEST
@@ -67,14 +63,8 @@ class TodoRepositoryImpl @Inject constructor(
     private val localDataSource: TodoLocalDAO,
     private val remoteDataSource: RemoteDataSource,
 ) : TodoItemsRepository {
-    private val _todos: MutableStateFlow<List<TodoItem>> = MutableStateFlow(emptyList())
-    override val todos: StateFlow<List<TodoItem>> = _todos.asStateFlow()
-    
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            _todos.update { localDataSource.getTodos().map(TodoLocalDTO::toDomain) }
-        }
-    }
+    override val todos: Flow<List<TodoItem>> = localDataSource.observeTodos()
+        .map { it.map(TodoLocalDTO::toDomain) }
     
     /**
      * Synchronizes todos
@@ -92,11 +82,9 @@ class TodoRepositoryImpl @Inject constructor(
                     .map { todos -> todos.toDomain() }
                     .let { todos ->
                         remoteDataSource.pushTodos(todos)
-                        _todos.update { todos }
                     }
                 val res = localDataSource.getTodos().map { it.toDomain() }
                 remoteDataSource.pushTodos(res)
-                _todos.update { res }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -115,7 +103,6 @@ class TodoRepositoryImpl @Inject constructor(
             return@withContext try {
                 localDataSource.upsertTodo(todo.toLocalDTO())
                 remoteDataSource.addTodo(todo)
-                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -133,7 +120,6 @@ class TodoRepositoryImpl @Inject constructor(
             return@withContext try {
                 localDataSource.deleteTodoById(id)
                 remoteDataSource.deleteTodo(id)
-                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -154,7 +140,6 @@ class TodoRepositoryImpl @Inject constructor(
                 )
                 localDataSource.upsertTodo(newTodo.toLocalDTO())
                 remoteDataSource.editTodo(newTodo)
-                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
@@ -195,7 +180,6 @@ class TodoRepositoryImpl @Inject constructor(
                     editedAt = LocalDateTime.now()
                 )
                 localDataSource.upsertTodo(newTodo.toLocalDTO())
-                _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 remoteDataSource.editTodo(newTodo)
                 Resource.Success(Unit)
             } catch (e: Exception) {

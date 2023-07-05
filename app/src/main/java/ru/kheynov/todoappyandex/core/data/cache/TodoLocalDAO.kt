@@ -3,6 +3,7 @@ package ru.kheynov.todoappyandex.core.data.cache
 import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Upsert
+import kotlinx.coroutines.flow.Flow
 import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
 
 /**
@@ -11,7 +12,10 @@ import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
 @Dao
 interface TodoLocalDAO {
     @Query("SELECT * FROM todo")
-    fun getTodos(): List<TodoLocalDTO>
+    fun observeTodos(): Flow<List<TodoLocalDTO>>
+    
+    @Query("SELECT * FROM todo")
+    suspend fun getTodos(): List<TodoLocalDTO>
     
     @Query("SELECT * FROM todo WHERE id = :id limit 1")
     suspend fun getTodoById(id: String): TodoLocalDTO?
