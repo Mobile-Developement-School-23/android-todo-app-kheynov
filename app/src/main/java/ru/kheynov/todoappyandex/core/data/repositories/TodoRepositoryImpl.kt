@@ -14,6 +14,13 @@ import okhttp3.internal.http.HTTP_INTERNAL_SERVER_ERROR
 import okhttp3.internal.http.HTTP_NOT_FOUND
 import okhttp3.internal.http.HTTP_UNAUTHORIZED
 import retrofit2.HttpException
+import ru.kheynov.todoappyandex.core.data.cache.TodoLocalDAO
+import ru.kheynov.todoappyandex.core.data.mappers.toDomain
+import ru.kheynov.todoappyandex.core.data.mappers.toLocalDTO
+import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
+import ru.kheynov.todoappyandex.core.data.network.dao.RemoteDataSource
+import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
+import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.NetworkException
@@ -22,13 +29,7 @@ import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.utils.UnauthorizedException
-import ru.kheynov.todoappyandex.core.data.cache.TodoLocalDAO
-import ru.kheynov.todoappyandex.core.data.mappers.toDomain
-import ru.kheynov.todoappyandex.core.data.mappers.toLocalDTO
-import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
-import ru.kheynov.todoappyandex.core.data.network.dao.RemoteDataSource
-import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
-import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
+import java.time.LocalDateTime
 import javax.inject.Inject
 
 private fun handleException(e: Exception): Resource.Failure {
@@ -93,11 +94,15 @@ class TodoRepositoryImpl @Inject constructor(
                         remoteDataSource.pushTodos(todos)
                         _todos.update { todos }
                     }
+                val res = localDataSource.getTodos().map { it.toDomain() }
+                remoteDataSource.pushTodos(res)
+                _todos.update { res }
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)
             }
         }
+    
     
     /**
      * Adds todo
@@ -144,8 +149,11 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun editTodo(todo: TodoItem): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                localDataSource.upsertTodo(todo.toLocalDTO())
-                remoteDataSource.editTodo(todo)
+                val newTodo = todo.copy(
+                    editedAt = LocalDateTime.now()
+                )
+                localDataSource.upsertTodo(newTodo.toLocalDTO())
+                remoteDataSource.editTodo(newTodo)
                 _todos.update { localDataSource.getTodos().map { it.toDomain() } }
                 Resource.Success(Unit)
             } catch (e: Exception) {
@@ -182,9 +190,13 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun setTodoState(todoItem: TodoItem, state: Boolean): Resource<Unit> =
         withContext(Dispatchers.IO) {
             return@withContext try {
-                localDataSource.setTodoState(todoItem.id, state)
-                remoteDataSource.setTodoState(todoItem, state)
+                val newTodo = todoItem.copy(
+                    isDone = state,
+                    editedAt = LocalDateTime.now()
+                )
+                localDataSource.upsertTodo(newTodo.toLocalDTO())
                 _todos.update { localDataSource.getTodos().map { it.toDomain() } }
+                remoteDataSource.editTodo(newTodo)
                 Resource.Success(Unit)
             } catch (e: Exception) {
                 handleException(e)

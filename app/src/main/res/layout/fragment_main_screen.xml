@@ -7,8 +7,9 @@
     android:background="@color/colorBackgroundPrimary"
     tools:context=".featureTodosList.presentation.MainScreenFragment">
 
-    <ImageView
+    <ImageButton
         android:id="@+id/updateButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/update_todos"
@@ -84,7 +85,6 @@
         android:id="@+id/progressCircular"
         android:layout_width="160dp"
         android:layout_height="160dp"
-        app:cardBackgroundColor="@color/grayTransparent"
         app:cardCornerRadius="@dimen/space_l"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

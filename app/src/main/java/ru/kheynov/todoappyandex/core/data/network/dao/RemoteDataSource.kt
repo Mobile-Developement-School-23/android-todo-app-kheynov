@@ -75,20 +75,4 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
-    /**
-     * Sets todo state on server
-     * @param todoItem [TodoItem]
-     * @param state [Boolean]
-     */
-    suspend fun setTodoState(todoItem: TodoItem, state: Boolean) {
-        val response = api.updateTodoById(
-            revision = metadata.getRevision(),
-            request = UpsertTodoRequest(
-                todoItem.toRemoteDTO(metadata.deviceId).copy(done = state)
-            ),
-            id = todoItem.id
-        )
-        metadata.saveRevision(response.revision)
-    }
 }

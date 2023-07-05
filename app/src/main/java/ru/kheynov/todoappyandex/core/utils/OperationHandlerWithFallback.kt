@@ -1,6 +1,7 @@
 package ru.kheynov.todoappyandex.core.utils
 
 import kotlinx.coroutines.delay
+import kotlin.reflect.KClass
 
 /**
  * [OperationHandlerWithFallback] tries to perform operation, if it wasn't successful execute
@@ -10,7 +11,7 @@ import kotlinx.coroutines.delay
  */
 
 class OperationHandlerWithFallback(
-    val fallbackAction: suspend () -> Resource<Unit>,
+    val fallbackAction: suspend () -> Unit,
 ) {
     /**
      * Repeats operation [repeat] times with [delay] between each attempt
@@ -23,16 +24,16 @@ class OperationHandlerWithFallback(
     suspend fun <T> executeOperation(
         repeat: Int = DEFAULT_REPETITIONS,
         delay: Long = 0,
-        exceptionsCatching: List<Exception> = listOf(
-            OutOfSyncDataException(),
-            ServerSideException()
+        exceptionsCatching: List<KClass<out TodoException>> = listOf(
+            OutOfSyncDataException::class,
+            ServerSideException::class,
         ),
         block: suspend () -> Resource<T>,
     ): Resource<T> {
         var repetitions = INITIAL_REPETITIONS
         while (repetitions < repeat) {
             val res = block()
-            if (res is Resource.Failure && res.exception in exceptionsCatching) {
+            if (res is Resource.Failure && res.exception::class in exceptionsCatching) {
                 fallbackAction()
             } else return res
             repetitions++

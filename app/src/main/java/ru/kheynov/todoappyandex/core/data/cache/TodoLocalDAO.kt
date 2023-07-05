@@ -21,7 +21,4 @@ interface TodoLocalDAO {
     
     @Query("DELETE FROM todo WHERE id = :id")
     suspend fun deleteTodoById(id: String)
-    
-    @Query("UPDATE todo SET isDone = :state WHERE id = :id")
-    suspend fun setTodoState(id: String, state: Boolean)
 }

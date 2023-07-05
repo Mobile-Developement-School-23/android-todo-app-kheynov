@@ -1,6 +1,7 @@
 package ru.kheynov.todoappyandex
 
 import android.os.Bundle
+import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -27,7 +28,8 @@ class MainActivity : AppCompatActivity() {
     }
     
     override fun onStart() {
-        networkListener.start()
+        if (Settings.System.canWrite(this))
+            networkListener.start()
         super.onStart()
     }
     
@@ -53,7 +55,8 @@ class MainActivity : AppCompatActivity() {
             ).addTag("INTERNET_LOST_N_FOUND")
             .build()
         WorkManager.getInstance(this).enqueue(syncWorker)
-        networkListener.stop()
+        if (Settings.System.canWrite(this))
+            networkListener.stop()
         super.onStop()
     }
 }

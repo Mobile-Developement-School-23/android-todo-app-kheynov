@@ -16,6 +16,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.kheynov.todoappyandex.R
+import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
+import ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency
+import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.EmptyFieldException
@@ -26,9 +29,6 @@ import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.utils.UiText
 import ru.kheynov.todoappyandex.core.utils.UnableToPerformOperation
-import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
-import ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency
-import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditAction
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -113,11 +113,14 @@ class TodoViewModel @Inject constructor(
                         )
                         return@executeOperation Resource.Failure(EmptyFieldException())
                     } else if (state.value.id.isBlank()) {
-                        repository.addTodo(_state.value.copy(id = UUID.randomUUID().toString()))
-                        return@executeOperation Resource.Success(Unit)
+                        return@executeOperation repository.addTodo(
+                            _state.value.copy(
+                                id = UUID.randomUUID().toString(),
+                                createdAt = LocalDateTime.now()
+                            )
+                        )
                     } else {
-                        repository.editTodo(_state.value.copy(editedAt = LocalDateTime.now()))
-                        return@executeOperation Resource.Success(Unit)
+                        return@executeOperation repository.editTodo(_state.value.copy(editedAt = LocalDateTime.now()))
                     }
                 }
                 when (handleResult) {

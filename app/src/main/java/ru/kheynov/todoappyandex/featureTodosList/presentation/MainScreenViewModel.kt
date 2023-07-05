@@ -16,6 +16,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import ru.kheynov.todoappyandex.R
+import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
+import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.NetworkException
@@ -25,8 +27,6 @@ import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.utils.UiText
 import ru.kheynov.todoappyandex.core.utils.UnableToPerformOperation
-import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
-import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState
 import javax.inject.Inject
@@ -44,7 +44,10 @@ class MainScreenViewModel @Inject constructor(
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
     
     private val operationHandler = OperationHandlerWithFallback(
-        fallbackAction = { repository.syncTodos() }
+        fallbackAction = {
+            repository.syncTodos()
+            fetchTodos()
+        }
     )
     
     private val _actions: Channel<MainScreenAction> = Channel(Channel.BUFFERED)
@@ -53,8 +56,6 @@ class MainScreenViewModel @Inject constructor(
     private var isShowingDoneTasks = true
     
     private var lastOperation: (suspend () -> Unit)? = null
-    
-    private val todos = repository.todos
     
     init {
         viewModelScope.launch {
@@ -65,6 +66,7 @@ class MainScreenViewModel @Inject constructor(
     
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
         viewModelScope.launch(exceptionHandler) {
+            _state.update { MainScreenState.Loading }
             lastOperation = {
                 val res = operationHandler.executeOperation {
                     repository.setTodoState(todoItem, state)
@@ -90,9 +92,7 @@ class MainScreenViewModel @Inject constructor(
     fun fetchTodos() {
         _state.update { (MainScreenState.Loading) }
         viewModelScope.launch(exceptionHandler) {
-            todos.collect { todos ->
-                _state.update { (MainScreenState.Loaded(todos)) }
-            }
+            _state.update { (MainScreenState.Loaded(repository.todos.value)) }
         }
     }
     
