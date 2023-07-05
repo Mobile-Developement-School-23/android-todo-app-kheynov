@@ -14,6 +14,8 @@ import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.databinding.FragmentMainScreenBinding
@@ -21,6 +23,7 @@ import ru.kheynov.todoappyandex.presentation.editor.TodoFragment
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.presentation.todos.stateHolders.MainScreenState
 
+@AndroidEntryPoint
 class MainScreenFragment : Fragment() {
     private val viewModel: MainScreenViewModel by viewModels()
     private lateinit var navController: NavController
@@ -60,6 +63,7 @@ class MainScreenFragment : Fragment() {
             toggleDoneTasks.setOnClickListener {
                 viewModel.toggleDoneTasks()
             }
+            updateButton.setOnClickListener { viewModel.updateTodos() }
         }
 
         with(recyclerView) {
@@ -76,14 +80,6 @@ class MainScreenFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.actions.collect(::handleActions)
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.todos.collect {
-                    (recyclerView.adapter as TodoListAdapter).submitList(it)
-                }
             }
         }
     }
@@ -119,6 +115,20 @@ class MainScreenFragment : Fragment() {
                 val data = (viewModel.state.value as? MainScreenState.Loaded)?.data ?: return
                 (recyclerView.adapter as TodoListAdapter).submitList(if (action.state) data else data.filter { !it.isDone })
             }
+
+            is MainScreenAction.ShowError ->
+                with(
+                    Snackbar.make(
+                        binding.root,
+                        action.text.toString(requireContext()),
+                        Snackbar.LENGTH_SHORT
+                    )
+                ) {
+                    setAction(R.string.retry) {
+                        viewModel.retryLastOperation()
+                    }
+                    show()
+                }
         }
     }
 
@@ -126,19 +136,14 @@ class MainScreenFragment : Fragment() {
         with(binding) {
             progressCircular.visibility =
                 if (state is MainScreenState.Loading) View.VISIBLE else View.GONE
-            rvTodoList.visibility = if (state is MainScreenState.Loaded) View.VISIBLE else View.GONE
+            rvTodoList.visibility = if (state is MainScreenState.Empty) View.GONE else View.VISIBLE
             noDataImage.visibility = if (state is MainScreenState.Empty) View.VISIBLE else View.GONE
             doneCountText.visibility =
                 if (state is MainScreenState.Loaded) View.VISIBLE else View.GONE
             if (state is MainScreenState.Loaded) {
                 doneCountText.text = getString(R.string.tasks_done, state.data.count { it.isDone })
+                (rvTodoList.adapter as TodoListAdapter).submitList(state.data)
             }
-            (rvTodoList.adapter as TodoListAdapter).submitList(
-                when (state) {
-                    is MainScreenState.Loaded -> state.data
-                    else -> emptyList()
-                }
-            )
         }
     }
 

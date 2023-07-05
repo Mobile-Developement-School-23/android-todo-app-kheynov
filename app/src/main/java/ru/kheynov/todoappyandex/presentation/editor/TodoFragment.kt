@@ -17,6 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.databinding.FragmentTodoBinding
@@ -28,6 +29,7 @@ import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
 
+@AndroidEntryPoint
 class TodoFragment : Fragment() {
     private val viewModel: TodoViewModel by viewModels()
     private lateinit var navController: NavController
@@ -46,7 +48,6 @@ class TodoFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentTodoBinding.inflate(inflater, container, false)
-
         return binding.root
     }
 
@@ -57,13 +58,13 @@ class TodoFragment : Fragment() {
         todoId?.let { viewModel.fetchTodo(it) } // fetch task if editing
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.actions.collect(::handleActions)
             }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state.collect(::updateUI)
             }
         }
@@ -109,11 +110,19 @@ class TodoFragment : Fragment() {
     private fun handleActions(action: AddEditAction) {
         when (action) {
             AddEditAction.NavigateBack -> navController.popBackStack()
-            is AddEditAction.ShowError -> Snackbar.make(
-                binding.root,
-                action.error.toString(requireContext()),
-                Snackbar.LENGTH_SHORT
-            ).show()
+            is AddEditAction.ShowError ->
+                with(
+                    Snackbar.make(
+                        binding.root,
+                        action.text.toString(requireContext()),
+                        Snackbar.LENGTH_SHORT
+                    )
+                ) {
+                    setAction(R.string.retry) {
+                        viewModel.retryLastOperation()
+                    }
+                    show()
+                }
 
             AddEditAction.ShowDatePicker -> showDatePicker()
         }
@@ -191,6 +200,10 @@ class TodoFragment : Fragment() {
             } else {
                 deadlineSwitch.isChecked = false
                 makeUntilDate.visibility = View.INVISIBLE
+            }
+            if (titleEditText.text?.isEmpty() == true) {
+                // чтобы задать текст только при первом получении тудушки
+                titleEditText.setText(state.text)
             }
 
             urgencyState.text = when (viewModel.state.value.urgency) {

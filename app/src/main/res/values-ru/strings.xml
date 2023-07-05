@@ -21,4 +21,9 @@
     <string name="high_urgency">Высокая</string>
     <string name="cancel">Отмена</string>
     <string name="ok">ОК</string>
+    <string name="unable_to_perform">Ошибка синхронизации</string>
+    <string name="update_todos">Обновить задачи</string>
+    <string name="connection_error">Ошибка при подключении к интернету</string>
+    <string name="server_error">Ошибка на сервере, попробуйте позже</string>
+    <string name="retry">Повторить</string>
 </resources>
