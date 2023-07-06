@@ -1,6 +1,7 @@
 package ru.kheynov.todoappyandex
 
 import android.app.Application
+import android.content.Context
 import androidx.work.Configuration
 import androidx.work.WorkManager
 import ru.kheynov.todoappyandex.core.di.AppComponent
@@ -29,3 +30,10 @@ class TodoApp : Application() {
         WorkManager.initialize(this, workManagerConfig)
     }
 }
+
+//allows to take appComponent from any place with only context
+val Context.appComponent: AppComponent
+    get() = when (this) {
+        is TodoApp -> appComponent
+        else -> this.applicationContext.appComponent
+    }

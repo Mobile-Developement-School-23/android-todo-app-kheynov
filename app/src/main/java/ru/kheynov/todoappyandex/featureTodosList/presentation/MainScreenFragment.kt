@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
-import ru.kheynov.todoappyandex.TodoApp
+import ru.kheynov.todoappyandex.appComponent
 import ru.kheynov.todoappyandex.databinding.FragmentMainScreenBinding
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.TodoFragment
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
@@ -50,8 +50,7 @@ class MainScreenFragment : Fragment() {
     
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (requireActivity().application as TodoApp)
-            .appComponent
+        context.appComponent
             .todoListComponent()
             .create()
             .inject(this)

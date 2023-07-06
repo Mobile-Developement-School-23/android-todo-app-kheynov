@@ -21,7 +21,7 @@ import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
-import ru.kheynov.todoappyandex.TodoApp
+import ru.kheynov.todoappyandex.appComponent
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.databinding.FragmentTodoBinding
@@ -50,8 +50,7 @@ class TodoFragment : Fragment() {
     
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        (requireActivity().application as TodoApp)
-            .appComponent
+        context.appComponent
             .todoEditorComponent()
             .create()
             .inject(this)
