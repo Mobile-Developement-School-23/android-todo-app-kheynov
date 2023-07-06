@@ -1,6 +1,7 @@
 package ru.kheynov.todoappyandex.featureTodoEditor.presentation
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,26 +13,31 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
-import ru.kheynov.todoappyandex.databinding.FragmentTodoBinding
+import ru.kheynov.todoappyandex.TodoApp
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency
+import ru.kheynov.todoappyandex.databinding.FragmentTodoBinding
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditAction
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.time.format.FormatStyle
 import java.util.Calendar
+import javax.inject.Inject
 
-@AndroidEntryPoint
 class TodoFragment : Fragment() {
-    private val viewModel: TodoViewModel by viewModels()
+    
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: TodoViewModel by viewModels { viewModelFactory }
+    
     private lateinit var navController: NavController
     
     private var _binding: FragmentTodoBinding? = null
@@ -41,6 +47,15 @@ class TodoFragment : Fragment() {
         get() = arguments?.getString(TODO_ID_KEY)
     
     private val isEditing: Boolean get() = todoId != null
+    
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as TodoApp)
+            .appComponent
+            .todoEditorComponent()
+            .create()
+            .inject(this)
+    }
     
     override fun onCreateView(
         inflater: LayoutInflater,

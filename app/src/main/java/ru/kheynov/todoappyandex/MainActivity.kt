@@ -8,7 +8,6 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import dagger.hilt.android.AndroidEntryPoint
 import ru.kheynov.todoappyandex.core.utils.NetworkListener
 import ru.kheynov.todoappyandex.core.workers.SyncTodosWorker
 import java.util.concurrent.TimeUnit
@@ -16,7 +15,6 @@ import javax.inject.Inject
 
 private const val PERIODIC_SYNC_INTERVAL = 8L
 
-@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     
     @Inject

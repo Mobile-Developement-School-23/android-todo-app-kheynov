@@ -1,5 +1,6 @@
 package ru.kheynov.todoappyandex.featureTodosList.presentation
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
@@ -15,17 +17,21 @@ import androidx.navigation.Navigation
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
+import ru.kheynov.todoappyandex.TodoApp
 import ru.kheynov.todoappyandex.databinding.FragmentMainScreenBinding
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.TodoFragment
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState
+import javax.inject.Inject
 
-@AndroidEntryPoint
 class MainScreenFragment : Fragment() {
-    private val viewModel: MainScreenViewModel by viewModels()
+    
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private val viewModel: MainScreenViewModel by viewModels { viewModelFactory }
+    
     private lateinit var navController: NavController
     
     private var _binding: FragmentMainScreenBinding? = null
@@ -41,6 +47,15 @@ class MainScreenFragment : Fragment() {
             viewModel.editTodo(todoItem)
         }
     )
+    
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (requireActivity().application as TodoApp)
+            .appComponent
+            .todoListComponent()
+            .create()
+            .inject(this)
+    }
     
     override fun onCreateView(
         inflater: LayoutInflater,

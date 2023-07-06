@@ -3,7 +3,6 @@ package ru.kheynov.todoappyandex.featureTodoEditor.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
@@ -35,7 +34,6 @@ import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
-@HiltViewModel
 class TodoViewModel @Inject constructor(
     private val repository: TodoItemsRepository,
 ) : ViewModel() {
