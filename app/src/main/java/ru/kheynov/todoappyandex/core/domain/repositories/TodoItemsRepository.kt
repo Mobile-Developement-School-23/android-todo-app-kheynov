@@ -1,9 +1,8 @@
 package ru.kheynov.todoappyandex.core.domain.repositories
 
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.StateFlow
-import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
+import ru.kheynov.todoappyandex.core.utils.Resource
 
 /**
  * Todo repository interface

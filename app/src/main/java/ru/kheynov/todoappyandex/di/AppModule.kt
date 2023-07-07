@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.di
+package ru.kheynov.todoappyandex.di
 
 import android.app.Application
 import android.content.Context
@@ -7,6 +7,7 @@ import android.net.ConnectivityManager
 import androidx.room.Room
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
@@ -22,7 +23,6 @@ interface AppModule {
     companion object {
         
         @Provides
-        @AppScope
         fun provideJsonSerializer(): Json = Json {
             ignoreUnknownKeys = true
             explicitNulls = false
@@ -40,7 +40,7 @@ interface AppModule {
             app.getSharedPreferences("SHARED_PREFS", Context.MODE_PRIVATE)
         
         @Provides
-        @AppScope
+        @Reusable
         fun provideConnectivityManager(context: Context) =
             context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
         

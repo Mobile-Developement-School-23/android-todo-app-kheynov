@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.di
+package ru.kheynov.todoappyandex.di
 
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module

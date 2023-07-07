@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.di
+package ru.kheynov.todoappyandex.di
 
 import android.app.Application
 import android.content.Context
@@ -12,6 +12,7 @@ import ru.kheynov.todoappyandex.featureTodosList.di.TodoListComponent
     modules = [
         AppModule::class,
         NetworkModule::class,
+        SubcomponentsModule::class,
     ]
 )
 @AppScope
@@ -28,4 +29,5 @@ interface AppComponent {
     
     fun todoListComponent(): TodoListComponent.Factory
     fun todoEditorComponent(): TodoEditorComponent.Factory
+    fun mainActivityComponent(): MainActivityComponent.Factory
 }

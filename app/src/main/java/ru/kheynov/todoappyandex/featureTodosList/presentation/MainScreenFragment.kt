@@ -98,10 +98,6 @@ class MainScreenFragment : Fragment() {
         }
     }
     
-    override fun onResume() {
-        super.onResume()
-    }
-    
     private fun handleActions(action: MainScreenAction) {
         when (action) {
             MainScreenAction.NavigateToAdding -> {

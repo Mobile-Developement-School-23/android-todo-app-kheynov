@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.di
+package ru.kheynov.todoappyandex.di
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

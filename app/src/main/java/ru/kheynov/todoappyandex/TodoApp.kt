@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import androidx.work.Configuration
 import androidx.work.WorkManager
-import ru.kheynov.todoappyandex.core.di.AppComponent
-import ru.kheynov.todoappyandex.core.di.DaggerAppComponent
-import ru.kheynov.todoappyandex.core.di.InjectedWorkerFactory
+import ru.kheynov.todoappyandex.di.AppComponent
+import ru.kheynov.todoappyandex.di.DaggerAppComponent
+import ru.kheynov.todoappyandex.di.InjectedWorkerFactory
 import javax.inject.Inject
 
 class TodoApp : Application() {

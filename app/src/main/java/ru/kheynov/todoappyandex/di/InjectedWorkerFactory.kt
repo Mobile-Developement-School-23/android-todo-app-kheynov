@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.di
+package ru.kheynov.todoappyandex.di
 
 import android.content.Context
 import androidx.work.ListenableWorker
