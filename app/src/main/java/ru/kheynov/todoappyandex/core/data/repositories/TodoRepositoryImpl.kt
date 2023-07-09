@@ -20,11 +20,15 @@ import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.NetworkException
+import ru.kheynov.todoappyandex.core.utils.Operation.ADD
+import ru.kheynov.todoappyandex.core.utils.Operation.DELETE
+import ru.kheynov.todoappyandex.core.utils.Operation.UPDATE
 import ru.kheynov.todoappyandex.core.utils.OutOfSyncDataException
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.utils.UnauthorizedException
+import ru.kheynov.todoappyandex.core.utils.mergeCacheAndRemote
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -75,14 +79,19 @@ class TodoRepositoryImpl @Inject constructor(
     override suspend fun syncTodos(): Resource<Unit> =
         withContext(Dispatchers.IO) {
             try {
-                val remoteData = remoteDataSource.fetchTodos()
-                remoteData.forEach { localDataSource.upsertTodo(it.toDomain().toLocalDTO()) }
-                localDataSource
-                    .getTodos()
-                    .map { todos -> todos.toDomain() }
-                    .let { todos ->
-                        remoteDataSource.pushTodos(todos)
+                val remoteData = remoteDataSource.fetchTodos().map { it.toDomain() }
+                val localData = localDataSource.getTodos().map { it.toDomain() }
+                val merged = mergeCacheAndRemote(
+                    local = localData,
+                    remote = remoteData,
+                )
+                merged.forEach {
+                    when (it.operation) {
+                        ADD, UPDATE -> localDataSource.upsertTodo(it.todo.toLocalDTO())
+                        DELETE -> localDataSource.deleteTodoById(it.todo.id)
                     }
+                }
+                
                 val res = localDataSource.getTodos().map { it.toDomain() }
                 remoteDataSource.pushTodos(res)
                 Resource.Success(Unit)
