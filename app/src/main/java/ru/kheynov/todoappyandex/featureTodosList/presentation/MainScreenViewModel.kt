@@ -41,16 +41,15 @@ class MainScreenViewModel @Inject constructor(
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
     
-    private val operationHandler = OperationHandlerWithFallback(
-        fallbackAction = {
-            repository.syncTodos()
-        }
-    )
+    private val operationHandler = OperationHandlerWithFallback(fallbackAction = {
+        repository.syncTodos()
+    })
     
     private val _actions: Channel<MainScreenAction> = Channel(Channel.BUFFERED)
     val actions: Flow<MainScreenAction> = _actions.receiveAsFlow()
     
-    private var isShowingDoneTasks = true
+    var isShowingDoneTasks = true
+        private set
     
     private var lastOperation: (suspend () -> Unit)? = null
     
@@ -60,7 +59,10 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             repository.syncTodos()
             todos.collect { todos ->
-                _state.update { MainScreenState.Loaded(todos) }
+                _state.update {
+                    if (todos.isNotEmpty()) MainScreenState.Loaded(todos)
+                    else MainScreenState.Empty
+                }
             }
         }
     }
@@ -117,19 +119,18 @@ class MainScreenViewModel @Inject constructor(
     private suspend fun handleException(
         e: Throwable,
     ) {
-        val errorText =
-            when (e) {
-                is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
-                
-                is ServerSideException,
-                is BadRequestException,
-                is TodoItemNotFoundException,
-                is DuplicateItemException,
-                -> UiText.StringResource(R.string.server_error)
-                
-                is UnableToPerformOperation -> UiText.StringResource(R.string.unable_to_perform)
-                else -> UiText.PlainText(e.localizedMessage?.toString() ?: "Unknown error")
-            }
+        val errorText = when (e) {
+            is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
+            
+            is ServerSideException,
+            is BadRequestException,
+            is TodoItemNotFoundException,
+            is DuplicateItemException,
+            -> UiText.StringResource(R.string.server_error)
+            
+            is UnableToPerformOperation -> UiText.StringResource(R.string.unable_to_perform)
+            else -> UiText.PlainText(e.localizedMessage?.toString() ?: "Unknown error")
+        }
         
         _actions.send(MainScreenAction.ShowError(errorText))
     }

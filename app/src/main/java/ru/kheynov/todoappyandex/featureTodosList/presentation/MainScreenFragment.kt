@@ -39,21 +39,15 @@ class MainScreenFragment : Fragment() {
     
     private lateinit var recyclerView: RecyclerView
     
-    private val rvAdapter = TodoListAdapter(
-        onTodoCheckboxClick = { todoItem, state ->
-            viewModel.setTodoState(todoItem, state)
-        },
-        onTodoDetailsClick = { todoItem ->
-            viewModel.editTodo(todoItem)
-        }
-    )
+    private val rvAdapter = TodoListAdapter(onTodoCheckboxClick = { todoItem, state ->
+        viewModel.setTodoState(todoItem, state)
+    }, onTodoDetailsClick = { todoItem ->
+        viewModel.editTodo(todoItem)
+    })
     
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        context.appComponent
-            .todoListComponent()
-            .create()
-            .inject(this)
+        context.appComponent.todoListComponent().create().inject(this)
     }
     
     override fun onCreateView(
@@ -122,23 +116,19 @@ class MainScreenFragment : Fragment() {
                     )
                 }
                 val data = (viewModel.state.value as? MainScreenState.Loaded)?.data ?: return
-                (recyclerView.adapter as TodoListAdapter)
-                    .submitList(if (action.state) data else data.filter { !it.isDone })
+                (recyclerView.adapter as TodoListAdapter).submitList(if (action.state) data else data.filter { !it.isDone })
             }
             
-            is MainScreenAction.ShowError ->
-                with(
-                    Snackbar.make(
-                        binding.root,
-                        action.text.toString(requireContext()),
-                        Snackbar.LENGTH_SHORT
-                    )
-                ) {
-                    setAction(R.string.retry) {
-                        viewModel.retryLastOperation()
-                    }
-                    show()
+            is MainScreenAction.ShowError -> with(
+                Snackbar.make(
+                    binding.root, action.text.toString(requireContext()), Snackbar.LENGTH_SHORT
+                )
+            ) {
+                setAction(R.string.retry) {
+                    viewModel.retryLastOperation()
                 }
+                show()
+            }
         }
     }
     
@@ -149,10 +139,10 @@ class MainScreenFragment : Fragment() {
             rvTodoList.visibility = if (state is MainScreenState.Empty) View.GONE else View.VISIBLE
             noDataImage.visibility = if (state is MainScreenState.Empty) View.VISIBLE else View.GONE
             doneCountText.visibility =
-                if (state is MainScreenState.Loaded) View.VISIBLE else View.GONE
+                if (state is MainScreenState.Loaded) View.VISIBLE else View.INVISIBLE
             if (state is MainScreenState.Loaded) {
                 doneCountText.text = getString(R.string.tasks_done, state.data.count { it.isDone })
-                (rvTodoList.adapter as TodoListAdapter).submitList(state.data)
+                (rvTodoList.adapter as TodoListAdapter).submitList(if (viewModel.isShowingDoneTasks) state.data else state.data.filter { !it.isDone })
             }
         }
     }

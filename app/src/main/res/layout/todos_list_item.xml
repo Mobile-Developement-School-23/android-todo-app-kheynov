@@ -32,12 +32,13 @@
 
     <TextView
         android:id="@+id/itemText"
+        style="@style/Body"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/space_s"
+        android:layout_marginStart="@dimen/space_s"
         android:ellipsize="end"
         android:maxLines="3"
-        android:paddingHorizontal="@dimen/space_xs"
         android:paddingVertical="@dimen/space_xs"
         app:layout_constraintEnd_toStartOf="@id/infoIcon"
         app:layout_constraintStart_toEndOf="@+id/urgencyIndicator"
@@ -46,6 +47,7 @@
 
     <TextView
         android:id="@+id/dateText"
+        style="@style/SubBody"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="@id/itemText"

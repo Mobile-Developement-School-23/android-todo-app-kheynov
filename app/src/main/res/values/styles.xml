@@ -33,4 +33,5 @@
         <item name="android:textColor">@color/blue</item>
         <item name="android:text">@string/ok</item>
     </style>
+
 </resources>

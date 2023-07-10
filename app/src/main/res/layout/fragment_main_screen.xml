@@ -7,53 +7,57 @@
     android:background="@color/colorBackgroundPrimary"
     tools:context=".featureTodosList.presentation.MainScreenFragment">
 
-    <ImageButton
+    <ImageView
         android:id="@+id/updateButton"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_m"
         android:contentDescription="@string/update_todos"
+        android:foreground="?attr/selectableItemBackground"
         android:scaleType="center"
         android:scaleX="1.2"
         android:scaleY="1.2"
         android:src="@drawable/baseline_update_24"
-        app:layout_constraintBottom_toTopOf="@id/titleTextView"
         app:layout_constraintEnd_toEndOf="@id/toggleDoneTasks"
         app:layout_constraintStart_toStartOf="@id/toggleDoneTasks"
+        app:layout_constraintTop_toTopOf="parent"
         app:tint="@color/blue" />
 
     <TextView
         android:id="@+id/titleTextView"
+        style="@style/LargeTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
         android:layout_marginTop="50dp"
         android:text="@string/todo_list_title"
         android:textColor="@color/colorPrimary"
-        android:textSize="@dimen/text_large_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/doneCountText"
+        style="@style/Body"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/colorTertiary"
-        android:textSize="@dimen/text_body"
         app:layout_constraintStart_toStartOf="@+id/titleTextView"
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
         tools:text="Выполнено: 5" />
 
     <ImageView
         android:id="@+id/toggleDoneTasks"
+        style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/space_m"
         android:layout_marginEnd="@dimen/space_l"
         android:contentDescription="@string/show_done_tasks"
+        android:foreground="?attr/selectableItemBackground"
         android:src="@drawable/ic_opened_eye"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/doneCountText"
-        app:layout_constraintTop_toTopOf="@+id/doneCountText" />
+        app:layout_constraintTop_toBottomOf="@id/updateButton" />
 
 
     <androidx.cardview.widget.CardView
