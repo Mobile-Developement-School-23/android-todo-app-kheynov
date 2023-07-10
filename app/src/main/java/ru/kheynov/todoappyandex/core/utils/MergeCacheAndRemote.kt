@@ -31,8 +31,10 @@ fun mergeCacheAndRemote(
     val result = mutableListOf<Item>()
     result.addAll(local.filter { it.id in toDeleteIds }.map { Item(it, Operation.DELETE) })
     result.addAll(remote.filter { it.id in toAddIds }.map { Item(it, Operation.ADD) })
-    local.forEach {
-        if (it.id in toUpdateIds) {
+    
+    local
+        .filter { it.id in toUpdateIds }
+        .forEach {
             val remoteItem = remote.first { remoteItem -> remoteItem.id == it.id }
             result.add(
                 if (
@@ -44,7 +46,5 @@ fun mergeCacheAndRemote(
                     Item(it, Operation.UPDATE)
             )
         }
-    }
-    
     return result
 }
