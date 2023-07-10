@@ -3,8 +3,9 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("kotlinx-serialization")
+    kotlin("kapt")
     id("io.gitlab.arturbosch.detekt") version "1.23.0"
 }
 
@@ -92,7 +93,7 @@ dependencies {
     // Room
     implementation("androidx.room:room-runtime:2.5.2")
     annotationProcessor("androidx.room:room-compiler:2.5.2")
-    kapt("androidx.room:room-compiler:2.5.2")
+    ksp("androidx.room:room-compiler:2.5.2")
     implementation("androidx.room:room-ktx:2.5.2")
     
     // Retrofit
@@ -102,4 +103,14 @@ dependencies {
     
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.8.1")
+    
+    // Compose
+    val composeVersion = "1.4.3"
+    val composeCompilerVersion = "1.4.8"
+    implementation("androidx.compose.material:material:$composeVersion")
+    implementation("androidx.compose.ui:ui:$composeVersion")
+    implementation("androidx.compose.ui:ui-tooling-preview:$composeVersion")
+    implementation("androidx.compose.runtime:runtime:$composeVersion")
+    implementation("androidx.compose.compiler:compiler:$composeCompilerVersion")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
 }
