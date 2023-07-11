@@ -1,5 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
+val token: String = gradleLocalProperties(rootDir).getProperty("token")
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -29,11 +33,15 @@ android {
     
     buildTypes {
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "token", token)
+        }
+        getByName("debug") {
+            buildConfigField("String", "token", token)
         }
     }
     compileOptions {
