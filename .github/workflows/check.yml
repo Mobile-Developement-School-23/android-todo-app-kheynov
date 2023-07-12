@@ -21,9 +21,9 @@ jobs:
       - name: Putting data to api_token
         env:
           DATA: ${{ secrets.API_KEY }}
-        run: echo $DATA > ./app/src/main/java/ru/kheynov/todoappyandex/data/util/ApiToken.kt
+        run: echo $DATA > ./app/src/main/java/ru/kheynov/todoappyandex/core/data/util/ApiToken.kt
       - name: Build with Gradle
         run: ./gradlew build
-      - name: KtLint Check
-        run: ./gradlew ktlintCheck
+      - name: Linter Check
+        run: ./gradlew detekt
 

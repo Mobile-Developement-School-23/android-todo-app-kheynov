@@ -22,13 +22,13 @@
         android:id="@+id/urgencyIndicator"
         android:layout_width="16dp"
         android:layout_height="16dp"
-        android:scaleType="center"
-        app:tint="@color/gray"
         android:contentDescription="@string/urgency_icon"
+        android:scaleType="center"
         android:src="@drawable/baseline_arrow_downward_24"
         app:layout_constraintBottom_toBottomOf="@id/itemText"
+        app:layout_constraintStart_toEndOf="@id/checkBox"
         app:layout_constraintTop_toTopOf="@id/itemText"
-        app:layout_constraintStart_toEndOf="@id/checkBox"/>
+        app:tint="@color/gray" />
 
     <TextView
         android:id="@+id/itemText"

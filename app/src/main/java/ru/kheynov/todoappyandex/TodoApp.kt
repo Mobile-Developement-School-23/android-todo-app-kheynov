@@ -1,19 +1,39 @@
 package ru.kheynov.todoappyandex
 
 import android.app.Application
-import androidx.hilt.work.HiltWorkerFactory
+import android.content.Context
 import androidx.work.Configuration
-import dagger.hilt.android.HiltAndroidApp
+import androidx.work.WorkManager
+import ru.kheynov.todoappyandex.di.AppComponent
+import ru.kheynov.todoappyandex.di.DaggerAppComponent
+import ru.kheynov.todoappyandex.di.InjectedWorkerFactory
 import javax.inject.Inject
 
-@HiltAndroidApp
-class TodoApp : Application(), Configuration.Provider {
-
+class TodoApp : Application() {
+    
+    lateinit var appComponent: AppComponent
+    
     @Inject
-    lateinit var workerFactory: HiltWorkerFactory
-
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder()
+    lateinit var workerFactory: InjectedWorkerFactory
+    
+    override fun onCreate() {
+        appComponent = DaggerAppComponent.factory().create(
+            this, applicationContext
+        )
+        appComponent.inject(this)
+        
+        super.onCreate()
+        
+        val workManagerConfig = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
+        WorkManager.initialize(this, workManagerConfig)
+    }
 }
+
+//allows to take appComponent from any place with only context
+val Context.appComponent: AppComponent
+    get() = when (this) {
+        is TodoApp -> appComponent
+        else -> this.applicationContext.appComponent
+    }
