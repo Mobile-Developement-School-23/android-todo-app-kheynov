@@ -1,5 +1,6 @@
 package ru.kheynov.todoappyandex.featureSettings.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,13 +38,15 @@ fun SettingsScreen(
     state: State<SettingsState>,
     onEvent: (SettingsUiEvent) -> Unit,
 ) {
-    Surface {
+    Surface(
+        modifier = Modifier.background(MaterialTheme.colors.background),
+    ) {
 
         val spacing = LocalSpacing.current
         Column(
             modifier = Modifier
                 .fillMaxWidth(),
-            horizontalAlignment = Alignment.Start
+            horizontalAlignment = Alignment.Start,
         ) {
             Row(
                 modifier = Modifier
@@ -66,7 +69,8 @@ fun SettingsScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(id = R.string.app_theme),
