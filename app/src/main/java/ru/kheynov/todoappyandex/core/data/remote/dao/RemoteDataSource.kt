@@ -1,6 +1,6 @@
-package ru.kheynov.todoappyandex.core.data.network.dao
+package ru.kheynov.todoappyandex.core.data.remote.dao
 
-import ru.kheynov.todoappyandex.core.data.cache.MetadataStorage
+import ru.kheynov.todoappyandex.core.data.local.MetadataStorage
 import ru.kheynov.todoappyandex.core.data.mappers.toRemoteDTO
 import ru.kheynov.todoappyandex.core.data.model.remote.PushListToServerRequest
 import ru.kheynov.todoappyandex.core.data.model.remote.TodoRemoteDTO

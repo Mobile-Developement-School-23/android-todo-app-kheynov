@@ -11,9 +11,9 @@ import dagger.Reusable
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
-import ru.kheynov.todoappyandex.core.data.cache.TodoLocalDatabase
-import ru.kheynov.todoappyandex.core.data.network.dao.RemoteDataSource
-import ru.kheynov.todoappyandex.core.data.network.dao.TodoAPI
+import ru.kheynov.todoappyandex.core.data.local.TodoLocalDatabase
+import ru.kheynov.todoappyandex.core.data.remote.dao.RemoteDataSource
+import ru.kheynov.todoappyandex.core.data.remote.dao.TodoAPI
 import ru.kheynov.todoappyandex.core.data.repositories.TodoRepositoryImpl
 import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 

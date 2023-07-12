@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.data.network.dao
+package ru.kheynov.todoappyandex.core.data.remote.dao
 
 import retrofit2.http.Body
 import retrofit2.http.DELETE

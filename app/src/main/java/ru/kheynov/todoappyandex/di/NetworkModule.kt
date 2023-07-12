@@ -8,7 +8,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import ru.kheynov.todoappyandex.core.data.network.interceptors.TokenInterceptor
+import ru.kheynov.todoappyandex.core.data.remote.interceptors.TokenInterceptor
 
 @OptIn(ExperimentalSerializationApi::class)
 @Module

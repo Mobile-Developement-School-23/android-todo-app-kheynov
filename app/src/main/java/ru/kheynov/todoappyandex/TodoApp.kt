@@ -35,5 +35,5 @@ class TodoApp : Application() {
 val Context.appComponent: AppComponent
     get() = when (this) {
         is TodoApp -> appComponent
-        else -> this.applicationContext.appComponent
+        else -> (this.applicationContext as TodoApp).appComponent
     }

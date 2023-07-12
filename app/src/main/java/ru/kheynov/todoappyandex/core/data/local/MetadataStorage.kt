@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.data.cache
+package ru.kheynov.todoappyandex.core.data.local
 
 import android.content.SharedPreferences
 import kotlinx.coroutines.sync.Mutex

@@ -122,7 +122,7 @@ class MainScreenFragment : Fragment() {
 
             is MainScreenAction.ShowError -> with(
                 Snackbar.make(
-                    binding.root, action.text.toString(requireContext()), Snackbar.LENGTH_SHORT
+                    binding.root, action.text.asString(requireContext()), Snackbar.LENGTH_SHORT
                 )
             ) {
                 setAction(R.string.retry) {

@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.data.util
+package ru.kheynov.todoappyandex.core.data.local.converters
 
 import androidx.room.TypeConverter
 import ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency
