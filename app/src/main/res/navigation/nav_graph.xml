@@ -16,10 +16,23 @@
             app:popEnterAnim="@anim/wait_anim"
             app:popExitAnim="@anim/slide_right" />
 
+        <action
+            android:id="@+id/action_todosFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/slide_left"
+            app:exitAnim="@anim/wait_anim"
+            app:popEnterAnim="@anim/wait_anim"
+            app:popExitAnim="@anim/slide_right" />
+
     </fragment>
 
     <fragment
         android:id="@+id/editTodoFragment"
         android:name="ru.kheynov.todoappyandex.featureTodoEditor.presentation.TodoFragment"
         android:label="Todo editing" />
+
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="ru.kheynov.todoappyandex.featureSettings.presentation.SettingsFragment"
+        android:label="Settings" />
 </navigation>

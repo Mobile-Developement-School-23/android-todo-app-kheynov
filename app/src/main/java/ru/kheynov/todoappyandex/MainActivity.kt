@@ -3,11 +3,17 @@ package ru.kheynov.todoappyandex
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
+import kotlinx.coroutines.launch
+import ru.kheynov.todoappyandex.core.data.local.SettingsStorage
 import ru.kheynov.todoappyandex.core.utils.NetworkListener
 import ru.kheynov.todoappyandex.core.workers.SyncTodosWorker
 import java.util.concurrent.TimeUnit
@@ -20,6 +26,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var networkListener: NetworkListener
 
+    @Inject
+    lateinit var settingsStorage: SettingsStorage
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.appComponent
@@ -27,6 +36,14 @@ class MainActivity : AppCompatActivity() {
             .create()
             .inject(this)
         setContentView(R.layout.activity_main)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                settingsStorage.themeObservable.collect { theme ->
+                    theme?.let { AppCompatDelegate.setDefaultNightMode(it.value) }
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -37,6 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+
         val syncWorker = PeriodicWorkRequestBuilder<SyncTodosWorker>(
             PERIODIC_SYNC_INTERVAL,
             TimeUnit.HOURS

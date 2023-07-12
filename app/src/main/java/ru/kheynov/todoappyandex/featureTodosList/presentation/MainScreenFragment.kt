@@ -72,6 +72,9 @@ class MainScreenFragment : Fragment() {
                 viewModel.toggleDoneTasks()
             }
             updateButton.setOnClickListener { viewModel.updateTodos() }
+            settingsButton.setOnClickListener {
+                navController.navigate(R.id.action_todosFragment_to_settingsFragment)
+            }
         }
 
         with(recyclerView) {

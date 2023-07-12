@@ -26,4 +26,10 @@
     <string name="connection_error">Internet connection error</string>
     <string name="server_error">Server error occurred</string>
     <string name="retry">Retry</string>
+    <string name="app_theme">App theme</string>
+    <string name="back_button">Back</string>
+    <string name="settings_button">Settings</string>
+    <string name="dark_theme_name">Dark</string>
+    <string name="light_theme_name">Light</string>
+    <string name="system_theme_name">System</string>
 </resources>

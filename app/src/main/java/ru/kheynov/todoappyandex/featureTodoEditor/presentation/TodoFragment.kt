@@ -20,7 +20,6 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.appComponent
-import ru.kheynov.todoappyandex.featureTodoEditor.components.AddEditScreen
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditAction
 import javax.inject.Inject
 
@@ -48,8 +47,8 @@ class TodoFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View {
-        return ComposeView(requireContext()).apply {
-            setContent {
+        return inflater.inflate(R.layout.fragment_todo, container, false).apply {
+            findViewById<ComposeView>(R.id.composeView).setContent {
                 val state = viewModel.state.collectAsStateWithLifecycle()
                 AddEditScreen(
                     state = state,

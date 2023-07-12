@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackgroundPrimary"
-    tools:context=".featureTodoEditor.presentation.TodoFragment">
+    tools:context=".featureSettings.presentation.SettingsFragment">
 
     <androidx.compose.ui.platform.ComposeView
-        android:id="@+id/composeView"
+        android:id="@+id/composeSettingsView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

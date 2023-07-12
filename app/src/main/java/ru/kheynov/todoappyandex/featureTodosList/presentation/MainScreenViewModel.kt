@@ -24,7 +24,7 @@ import ru.kheynov.todoappyandex.core.utils.OperationHandlerWithFallback
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
-import ru.kheynov.todoappyandex.core.utils.UiText
+import ru.kheynov.todoappyandex.core.ui.UiText
 import ru.kheynov.todoappyandex.core.utils.UnableToPerformOperation
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState

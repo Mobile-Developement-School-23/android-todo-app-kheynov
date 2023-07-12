@@ -7,22 +7,17 @@
     android:background="@color/colorBackgroundPrimary"
     tools:context=".featureTodosList.presentation.MainScreenFragment">
 
-    <ImageView
-        android:id="@+id/updateButton"
+    <Button
+        android:id="@+id/settingsButton"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_m"
-        android:contentDescription="@string/update_todos"
-        android:foreground="?attr/selectableItemBackground"
-        android:scaleType="center"
-        android:scaleX="1.2"
-        android:scaleY="1.2"
-        android:src="@drawable/baseline_update_24"
-        app:layout_constraintEnd_toEndOf="@id/toggleDoneTasks"
-        app:layout_constraintStart_toStartOf="@id/toggleDoneTasks"
-        app:layout_constraintTop_toTopOf="parent"
-        app:tint="@color/blue" />
+        android:drawableEnd="@drawable/baseline_settings_24"
+        android:drawableTint="@color/blue"
+        android:text="@string/settings_button"
+        android:textColor="@color/blue"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/titleTextView"
@@ -30,11 +25,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="60dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="8dp"
         android:text="@string/todo_list_title"
         android:textColor="@color/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/settingsButton" />
 
     <TextView
         android:id="@+id/doneCountText"
@@ -46,19 +41,32 @@
         app:layout_constraintTop_toBottomOf="@+id/titleTextView"
         tools:text="Выполнено: 5" />
 
-    <ImageView
+
+    <ImageButton
         android:id="@+id/toggleDoneTasks"
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/space_m"
-        android:layout_marginEnd="@dimen/space_l"
         android:contentDescription="@string/show_done_tasks"
-        android:foreground="?attr/selectableItemBackground"
         android:src="@drawable/ic_opened_eye"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/updateButton" />
+        app:layout_constraintStart_toEndOf="@+id/updateButton"
+        app:layout_constraintTop_toTopOf="@id/updateButton" />
 
+    <ImageButton
+        android:id="@+id/updateButton"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_m"
+        android:contentDescription="@string/update_todos"
+        android:scaleType="center"
+        android:scaleX="1.2"
+        android:scaleY="1.2"
+        android:src="@drawable/baseline_update_24"
+        app:layout_constraintStart_toEndOf="@+id/titleTextView"
+        app:layout_constraintTop_toTopOf="@id/titleTextView"
+        app:tint="@color/blue" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
@@ -67,7 +75,7 @@
         android:layout_marginTop="@dimen/space_l"
         android:layout_marginBottom="@dimen/space_m"
         app:cardBackgroundColor="@color/colorBackgroundSecondary"
-        app:cardCornerRadius="8dp"
+        app:cardCornerRadius="@dimen/space_s"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_default="wrap"
