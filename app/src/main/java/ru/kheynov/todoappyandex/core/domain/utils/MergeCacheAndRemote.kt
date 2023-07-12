@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.utils
+package ru.kheynov.todoappyandex.core.domain.utils
 
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 

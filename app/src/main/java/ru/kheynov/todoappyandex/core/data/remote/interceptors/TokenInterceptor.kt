@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.data.network.interceptors
+package ru.kheynov.todoappyandex.core.data.remote.interceptors
 
 import okhttp3.Interceptor
 import okhttp3.Response
