@@ -13,16 +13,16 @@ import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
 interface TodoLocalDAO {
     @Query("SELECT * FROM todo")
     fun observeTodos(): Flow<List<TodoLocalDTO>>
-    
+
     @Query("SELECT * FROM todo")
     suspend fun getTodos(): List<TodoLocalDTO>
-    
+
     @Query("SELECT * FROM todo WHERE id = :id limit 1")
     suspend fun getTodoById(id: String): TodoLocalDTO?
-    
+
     @Upsert
     suspend fun upsertTodo(todo: TodoLocalDTO)
-    
+
     @Query("DELETE FROM todo WHERE id = :id")
     suspend fun deleteTodoById(id: String)
 }

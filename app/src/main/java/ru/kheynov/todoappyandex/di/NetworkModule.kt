@@ -15,12 +15,12 @@ import ru.kheynov.todoappyandex.core.data.network.interceptors.TokenInterceptor
 interface NetworkModule {
     companion object {
         private const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
-        
+
         @Provides
         @AppScope
         fun provideOkHttpClient(): OkHttpClient =
             OkHttpClient.Builder().addInterceptor(TokenInterceptor()).build()
-        
+
         @Provides
         @AppScope
         fun provideRetrofit(

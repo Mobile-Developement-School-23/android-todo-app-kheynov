@@ -10,20 +10,20 @@ import ru.kheynov.todoappyandex.di.InjectedWorkerFactory
 import javax.inject.Inject
 
 class TodoApp : Application() {
-    
+
     lateinit var appComponent: AppComponent
-    
+
     @Inject
     lateinit var workerFactory: InjectedWorkerFactory
-    
+
     override fun onCreate() {
         appComponent = DaggerAppComponent.factory().create(
             this, applicationContext
         )
         appComponent.inject(this)
-        
+
         super.onCreate()
-        
+
         val workManagerConfig = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()

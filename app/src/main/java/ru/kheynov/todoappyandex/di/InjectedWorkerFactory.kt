@@ -10,7 +10,7 @@ import javax.inject.Inject
 class InjectedWorkerFactory @Inject constructor(
     private val syncTodoWorkerFactory: SyncTodosWorker.Factory,
 ) : WorkerFactory() {
-    
+
     override fun createWorker(
         appContext: Context,
         workerClassName: String,
@@ -19,7 +19,7 @@ class InjectedWorkerFactory @Inject constructor(
         return when (workerClassName) {
             SyncTodosWorker::class.java.name ->
                 syncTodoWorkerFactory.create(appContext, workerParameters)
-            
+
             else -> null
         }
     }

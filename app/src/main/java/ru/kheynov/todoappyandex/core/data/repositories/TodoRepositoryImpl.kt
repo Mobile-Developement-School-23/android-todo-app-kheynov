@@ -43,7 +43,7 @@ private fun handleException(e: Exception): Resource.Failure {
                             message.contains("duplicate") -> DuplicateItemException()
                             else -> BadRequestException()
                         }
-                        
+
                         HTTP_INTERNAL_SERVER_ERROR, HTTP_BAD_GATEWAY -> ServerSideException()
                         HTTP_NOT_FOUND -> TodoItemNotFoundException()
                         HTTP_UNAUTHORIZED -> UnauthorizedException()
@@ -69,7 +69,7 @@ class TodoRepositoryImpl @Inject constructor(
 ) : TodoItemsRepository {
     override val todos: Flow<List<TodoItem>> = localDataSource.observeTodos()
         .map { it.map(TodoLocalDTO::toDomain) }
-    
+
     /**
      * Synchronizes todos
      * Fetches todos from remote data source and pushes them to local data source
@@ -91,7 +91,7 @@ class TodoRepositoryImpl @Inject constructor(
                         DELETE -> localDataSource.deleteTodoById(it.todo.id)
                     }
                 }
-                
+
                 val res = localDataSource.getTodos().map { it.toDomain() }
                 remoteDataSource.pushTodos(res)
                 Resource.Success(Unit)
@@ -99,8 +99,8 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
-    
+
+
     /**
      * Adds todo
      * Adds todo to local data source and pushes it to remote data source
@@ -117,7 +117,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Deletes todo
      * Deletes todo from local data source and pushes it to remote data source
@@ -134,7 +134,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Edits todo
      * Edits todo in local data source and pushes it to remote data source
@@ -154,7 +154,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Gets todo by id
      * @param id [String]
@@ -173,7 +173,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Sets todo state
      * Sets todo state in local data source and pushes it to remote data source

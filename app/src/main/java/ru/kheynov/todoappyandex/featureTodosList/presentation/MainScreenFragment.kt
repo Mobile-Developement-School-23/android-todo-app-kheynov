@@ -27,29 +27,29 @@ import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainS
 import javax.inject.Inject
 
 class MainScreenFragment : Fragment() {
-    
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: MainScreenViewModel by viewModels { viewModelFactory }
-    
+
     private lateinit var navController: NavController
-    
+
     private var _binding: FragmentMainScreenBinding? = null
     private val binding get() = _binding!!
-    
+
     private lateinit var recyclerView: RecyclerView
-    
+
     private val rvAdapter = TodoListAdapter(onTodoCheckboxClick = { todoItem, state ->
         viewModel.setTodoState(todoItem, state)
     }, onTodoDetailsClick = { todoItem ->
         viewModel.editTodo(todoItem)
     })
-    
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         context.appComponent.todoListComponent().create().inject(this)
     }
-    
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -58,11 +58,11 @@ class MainScreenFragment : Fragment() {
         _binding = FragmentMainScreenBinding.inflate(inflater, container, false)
         return binding.root
     }
-    
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-        
+
         with(binding) {
             fabAddTodo.setOnClickListener {
                 viewModel.addTodo()
@@ -73,38 +73,38 @@ class MainScreenFragment : Fragment() {
             }
             updateButton.setOnClickListener { viewModel.updateTodos() }
         }
-        
+
         with(recyclerView) {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = rvAdapter
         }
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 viewModel.state.collect(::updateUI)
             }
         }
-        
+
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.actions.collect(::handleActions)
             }
         }
     }
-    
+
     private fun handleActions(action: MainScreenAction) {
         when (action) {
             MainScreenAction.NavigateToAdding -> {
                 navController.navigate(R.id.action_todosFragment_to_todoDetailFragment)
             }
-            
+
             is MainScreenAction.NavigateToEditing -> {
                 navController.navigate(
                     R.id.action_todosFragment_to_todoDetailFragment,
                     TodoFragment.createArgumentsForEditing(action.id)
                 )
             }
-            
+
             is MainScreenAction.ToggleDoneTasks -> {
                 with(binding.toggleDoneTasks) {
                     setImageDrawable(
@@ -116,9 +116,10 @@ class MainScreenFragment : Fragment() {
                     )
                 }
                 val data = (viewModel.state.value as? MainScreenState.Loaded)?.data ?: return
-                (recyclerView.adapter as TodoListAdapter).submitList(if (action.state) data else data.filter { !it.isDone })
+                (recyclerView.adapter as TodoListAdapter)
+                    .submitList(if (action.state) data else data.filter { !it.isDone })
             }
-            
+
             is MainScreenAction.ShowError -> with(
                 Snackbar.make(
                     binding.root, action.text.toString(requireContext()), Snackbar.LENGTH_SHORT
@@ -131,7 +132,7 @@ class MainScreenFragment : Fragment() {
             }
         }
     }
-    
+
     private fun updateUI(state: MainScreenState) {
         with(binding) {
             progressCircular.visibility =
@@ -142,11 +143,14 @@ class MainScreenFragment : Fragment() {
                 if (state is MainScreenState.Loaded) View.VISIBLE else View.INVISIBLE
             if (state is MainScreenState.Loaded) {
                 doneCountText.text = getString(R.string.tasks_done, state.data.count { it.isDone })
-                (rvTodoList.adapter as TodoListAdapter).submitList(if (viewModel.isShowingDoneTasks) state.data else state.data.filter { !it.isDone })
+                (rvTodoList.adapter as TodoListAdapter)
+                    .submitList(
+                        if (viewModel.isShowingDoneTasks) state.data
+                        else state.data.filter { !it.isDone })
             }
         }
     }
-    
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

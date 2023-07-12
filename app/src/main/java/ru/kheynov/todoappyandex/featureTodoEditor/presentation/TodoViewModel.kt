@@ -39,7 +39,7 @@ class TodoViewModel @Inject constructor(
 ) : ViewModel() {
     private val _actions: Channel<AddEditAction> = Channel(Channel.BUFFERED)
     val actions: Flow<AddEditAction> = _actions.receiveAsFlow()
-    
+
     private val _state = MutableStateFlow(
         TodoItem(
             id = "",
@@ -51,18 +51,18 @@ class TodoViewModel @Inject constructor(
         )
     )
     val state: StateFlow<TodoItem> = _state.asStateFlow()
-    
+
     private val handler = OperationHandlerWithFallback(
         fallbackAction = { repository.syncTodos() }
     )
-    
+
     private val exceptionHandler = CoroutineExceptionHandler { context, throwable ->
         Log.e("Coroutine", "Error: ", throwable)
         CoroutineScope(context).launch { handleException(throwable) }
     }
-    
+
     private var lastOperation: (suspend () -> Unit)? = null
-    
+
     fun fetchTodo(id: String) {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
@@ -77,15 +77,15 @@ class TodoViewModel @Inject constructor(
             lastOperation?.invoke()
         }
     }
-    
+
     fun changeTitle(text: String) {
         _state.update { _state.value.copy(text = text) }
     }
-    
+
     fun changeUrgency(urgency: TodoUrgency) {
         _state.update { _state.value.copy(urgency = urgency) }
     }
-    
+
     fun onDeadlineSwitchChecked(checked: Boolean) {
         if (checked) {
             if (_state.value.deadline != null) return
@@ -96,11 +96,11 @@ class TodoViewModel @Inject constructor(
             _state.update { _state.value.copy(deadline = null) }
         }
     }
-    
+
     fun changeDeadline(deadline: LocalDate?) {
         _state.update { _state.value.copy(deadline = deadline) }
     }
-    
+
     fun saveTodo() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
@@ -129,7 +129,7 @@ class TodoViewModel @Inject constructor(
             lastOperation?.invoke()
         }
     }
-    
+
     fun deleteTodo() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation = {
@@ -144,32 +144,32 @@ class TodoViewModel @Inject constructor(
             lastOperation?.invoke()
         }
     }
-    
+
     fun retryLastOperation() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation?.invoke()
         }
     }
-    
+
     private suspend fun handleException(
         e: Throwable,
     ) {
         val errorText: UiText =
             when (e) {
                 is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
-                
+
                 is ServerSideException,
                 is BadRequestException,
                 is TodoItemNotFoundException,
                 is DuplicateItemException,
                 -> UiText.StringResource(R.string.server_error)
-                
+
                 is EmptyFieldException -> UiText.StringResource(R.string.title_cannot_be_empty)
-                
+
                 is UnableToPerformOperation -> UiText.StringResource(R.string.unable_to_perform)
                 else -> UiText.PlainText(e.localizedMessage?.toString() ?: "Unknown error")
             }
-        
+
         _actions.send(AddEditAction.ShowError(errorText))
     }
 }

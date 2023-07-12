@@ -23,15 +23,15 @@ fun mergeCacheAndRemote(
 ): List<Item> {
     val localItems = local.map { it.id }.toHashSet()
     val remoteItems = remote.map { it.id }.toHashSet()
-    
+
     val toAddIds = remoteItems.subtract(localItems)
     val toDeleteIds = localItems.subtract(remoteItems)
     val toUpdateIds = localItems.intersect(remoteItems)
-    
+
     val result = mutableListOf<Item>()
     result.addAll(local.filter { it.id in toDeleteIds }.map { Item(it, Operation.DELETE) })
     result.addAll(remote.filter { it.id in toAddIds }.map { Item(it, Operation.ADD) })
-    
+
     local
         .filter { it.id in toUpdateIds }
         .forEach {

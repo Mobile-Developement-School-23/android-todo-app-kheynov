@@ -41,7 +41,7 @@ class OperationHandlerWithFallback(
         }
         return Resource.Failure(UnableToPerformOperation())
     }
-    
+
     companion object {
         const val INITIAL_REPETITIONS = 0
         const val DEFAULT_REPETITIONS = 3

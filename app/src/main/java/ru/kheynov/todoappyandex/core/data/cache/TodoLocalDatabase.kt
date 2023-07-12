@@ -17,7 +17,7 @@ import ru.kheynov.todoappyandex.core.data.util.Converters
 @TypeConverters(Converters::class)
 abstract class TodoLocalDatabase : RoomDatabase() {
     abstract val dao: TodoLocalDAO
-    
+
     companion object {
         const val DATABASE_NAME = "todos_db"
     }

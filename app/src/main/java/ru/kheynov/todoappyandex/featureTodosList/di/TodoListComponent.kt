@@ -12,6 +12,6 @@ interface TodoListComponent {
     interface Factory {
         fun create(): TodoListComponent
     }
-    
+
     fun inject(fragment: MainScreenFragment)
 }

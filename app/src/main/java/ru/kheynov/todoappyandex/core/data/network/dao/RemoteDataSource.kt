@@ -24,7 +24,7 @@ class RemoteDataSource @Inject constructor(
         res.revision.let { metadata.saveRevision(it) }
         return res.todos
     }
-    
+
     /**
      * Pushes todos to server
      * @param todos list of [TodoItem]
@@ -38,7 +38,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     /**
      * Adds todo to server
      * @param todo [TodoItem]
@@ -50,7 +50,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     /**
      * Deletes todo from server
      * @param id [String]
@@ -62,7 +62,7 @@ class RemoteDataSource @Inject constructor(
         )
         metadata.saveRevision(response.revision)
     }
-    
+
     /**
      * Edits todo on server
      * @param todo [TodoItem]

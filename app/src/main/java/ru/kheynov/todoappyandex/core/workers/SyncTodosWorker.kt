@@ -37,11 +37,11 @@ class SyncTodosWorker @AssistedInject constructor(
                     )
                 )
             }
-            
+
             is Resource.Success -> Result.success()
         }
     }
-    
+
     @AssistedFactory
     interface Factory {
         fun create(

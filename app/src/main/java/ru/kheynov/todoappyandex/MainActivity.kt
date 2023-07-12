@@ -16,10 +16,10 @@ import javax.inject.Inject
 private const val PERIODIC_SYNC_INTERVAL = 8L
 
 class MainActivity : AppCompatActivity() {
-    
+
     @Inject
     lateinit var networkListener: NetworkListener
-    
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.appComponent
@@ -28,13 +28,13 @@ class MainActivity : AppCompatActivity() {
             .inject(this)
         setContentView(R.layout.activity_main)
     }
-    
+
     override fun onStart() {
         if (Settings.System.canWrite(this))
             networkListener.start()
         super.onStart()
     }
-    
+
     override fun onResume() {
         super.onResume()
         val syncWorker = PeriodicWorkRequestBuilder<SyncTodosWorker>(
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity() {
         ).build()
         WorkManager.getInstance(this).enqueue(syncWorker)
     }
-    
+
     override fun onStop() {
         val syncWorker = OneTimeWorkRequestBuilder<SyncTodosWorker>()
             .setConstraints(

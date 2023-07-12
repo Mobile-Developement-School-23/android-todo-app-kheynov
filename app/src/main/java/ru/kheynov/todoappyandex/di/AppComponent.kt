@@ -24,9 +24,9 @@ interface AppComponent {
             @BindsInstance context: Context,
         ): AppComponent
     }
-    
+
     fun inject(app: TodoApp)
-    
+
     fun todoListComponent(): TodoListComponent.Factory
     fun todoEditorComponent(): TodoEditorComponent.Factory
     fun mainActivityComponent(): MainActivityComponent.Factory

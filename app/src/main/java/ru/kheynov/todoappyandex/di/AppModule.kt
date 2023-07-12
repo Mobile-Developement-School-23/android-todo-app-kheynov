@@ -21,29 +21,29 @@ import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
 @Module
 interface AppModule {
     companion object {
-        
+
         @Provides
         fun provideJsonSerializer(): Json = Json {
             ignoreUnknownKeys = true
             explicitNulls = false
         }
-        
+
         @Provides
         @AppScope
         fun provideTodosApi(retrofit: Retrofit): TodoAPI = retrofit.create(TodoAPI::class.java)
-        
+
         @Provides
         @AppScope
         fun provideSharedPreferences(
             app: Application,
         ): SharedPreferences =
             app.getSharedPreferences("SHARED_PREFS", Context.MODE_PRIVATE)
-        
+
         @Provides
         @Reusable
         fun provideConnectivityManager(context: Context) =
             context.getSystemService(ConnectivityManager::class.java) as ConnectivityManager
-        
+
         @Provides
         @AppScope
         fun provideTodoDatabase(app: Application): TodoLocalDatabase =
@@ -52,7 +52,7 @@ interface AppModule {
                 TodoLocalDatabase::class.java,
                 TodoLocalDatabase.DATABASE_NAME
             ).build()
-        
+
         @Provides
         @AppScope
         fun provideRepository(

@@ -12,6 +12,6 @@ interface TodoEditorComponent {
     interface Factory {
         fun create(): TodoEditorComponent
     }
-    
+
     fun inject(fragment: TodoFragment)
 }
