@@ -12,5 +12,5 @@ interface TodoEditorModule {
     @Binds
     @IntoMap
     @ViewModelKey(TodoViewModel::class)
-    fun bindViewModel(viewmodel: TodoViewModel): ViewModel
+    fun bindViewModel(viewModel: TodoViewModel): ViewModel
 }
