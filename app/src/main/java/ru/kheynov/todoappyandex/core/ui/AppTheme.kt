@@ -46,6 +46,12 @@ val Colors.green: Color get() = if (isLight) greenLight else greenDark
 val Colors.blue: Color get() = if (isLight) blueLight else blueDark
 val Colors.lightBlue: Color get() = if (isLight) lightBlueLight else lightBlueDark
 val Colors.separator: Color get() = if (isLight) separatorLight else separatorDark
+val Colors.gray: Color get() = if (isLight) grayLightPalette else grayDark
+val Colors.grayLight: Color get() = if (isLight) grayLightLight else grayLightDark
+val Colors.overlay: Color get() = if (isLight) overlayLight else overlayDark
+val Colors.disabled: Color get() = if (isLight) colorDisableLight else colorDisableDark
+val Colors.tertiary: Color get() = if (isLight) colorTertiaryLight else colorTertiaryDark
+val Colors.elevated: Color get() = if (isLight) colorBackgroundElevatedLight else colorBackgroundElevatedDark
 
 @Composable
 fun AppTheme(
@@ -69,8 +75,8 @@ fun AppTheme(
 }
 
 //create preview for light and dark theme
-@Preview("Light Theme", widthDp = 360, heightDp = 640)
-@Preview("Dark Theme", widthDp = 360, heightDp = 640, uiMode = UI_MODE_NIGHT_YES)
+@Preview("Light Theme", widthDp = 360, heightDp = 800)
+@Preview("Dark Theme", widthDp = 360, heightDp = 800, uiMode = UI_MODE_NIGHT_YES)
 @Composable
 fun AppThemePreview() {
     AppTheme {
@@ -136,6 +142,42 @@ fun AppThemePreview() {
                     textColor = MaterialTheme.colors.onError,
                     textStyle = MaterialTheme.typography.caption,
                     text = "Separator (caption)",
+                )
+                BoxPreview(
+                    background = MaterialTheme.colors.gray,
+                    textColor = MaterialTheme.colors.onError,
+                    textStyle = MaterialTheme.typography.body1,
+                    text = "Gray (body)",
+                )
+                BoxPreview(
+                    background = MaterialTheme.colors.grayLight,
+                    textColor = MaterialTheme.colors.onError,
+                    textStyle = MaterialTheme.typography.body1,
+                    text = "GrayLight (body)",
+                )
+                BoxPreview(
+                    background = MaterialTheme.colors.overlay,
+                    textColor = MaterialTheme.colors.onError,
+                    textStyle = MaterialTheme.typography.body1,
+                    text = "Overlay (body)",
+                )
+                BoxPreview(
+                    background = MaterialTheme.colors.disabled,
+                    textColor = MaterialTheme.colors.onError,
+                    textStyle = MaterialTheme.typography.body1,
+                    text = "Disabled (body)",
+                )
+                BoxPreview(
+                    background = MaterialTheme.colors.tertiary,
+                    textColor = MaterialTheme.colors.onError,
+                    textStyle = MaterialTheme.typography.body1,
+                    text = "Tertiary (body)",
+                )
+                BoxPreview(
+                    background = MaterialTheme.colors.elevated,
+                    textColor = MaterialTheme.colors.primary,
+                    textStyle = MaterialTheme.typography.body1,
+                    text = "Elevated (body)",
                 )
             }
         }

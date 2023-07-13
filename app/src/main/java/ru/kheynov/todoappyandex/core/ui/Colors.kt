@@ -6,21 +6,18 @@ import androidx.compose.ui.graphics.Color
 
 val black = Color(0xFF000000)
 val white = Color(0xFFFFFFFF)
-val transparent = Color(0x00000000)
 
 //Light theme colors
 val redLight = Color(0xFFFF3B30)
 val greenLight = Color(0xFF34C759)
 val blueLight = Color(0xFF007AFF)
 val lightBlueLight = Color(0xFF4D007AFF)
-val grayLight = Color(0xFF8E8E93)
+val grayLightPalette = Color(0xFF8E8E93)
 val grayLightLight = Color(0xFFD1D1D6)
-val grayTransparentLight = Color(0x26D1D1D6)
 
 val separatorLight = Color(0x33000000)
 val overlayLight = Color(0x0F000000)
 val colorPrimaryLight = black
-val colorSecondaryLight = Color(0x99000000)
 val colorTertiaryLight = Color(0x4D000000)
 val colorAccentLight = blueLight
 val colorDisableLight = Color(0x26000000)
@@ -39,7 +36,6 @@ val grayLightDark = Color(0xFF48484A)
 val separatorDark = Color(0x33FFFFFF)
 val overlayDark = Color(0x52000000)
 val colorPrimaryDark = white
-val colorSecondaryDark = Color(0x99FFFFFF)
 val colorTertiaryDark = Color(0x66FFFFFF)
 val colorAccentDark = blueDark
 val colorDisableDark = Color(0x26FFFFFF)

@@ -1,5 +1,6 @@
 package ru.kheynov.todoappyandex.featureTodoEditor.presentation
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -21,6 +22,9 @@ import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.appComponent
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditAction
+import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditUiEvent
+import java.time.LocalDate
+import java.util.Calendar
 import javax.inject.Inject
 
 class TodoFragment : Fragment() {
@@ -89,7 +93,37 @@ class TodoFragment : Fragment() {
                     }
                     show()
                 }
+
+            AddEditAction.ShowDatePicker -> showDatePicker()
+            AddEditAction.ShowUrgencySelector -> TODO()
         }
+    }
+
+    private fun showDatePicker() {
+        val c = Calendar.getInstance()
+        val year = c.get(Calendar.YEAR)
+        val month = c.get(Calendar.MONTH)
+        val day = c.get(Calendar.DAY_OF_MONTH)
+        val datePicker = DatePickerDialog(
+            requireContext(),
+            R.style.DatePickerStyle,
+
+            { _, yearPicker, monthPicker, dayPicker ->
+                viewModel.handleEvent(
+                    AddEditUiEvent.ChangeDeadline(
+                        LocalDate.of(
+                            yearPicker,
+                            monthPicker + 1,
+                            dayPicker
+                        )
+                    )
+                )
+            },
+            year,
+            month,
+            day
+        )
+        datePicker.show()
     }
 
     companion object {

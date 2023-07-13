@@ -101,6 +101,10 @@ class TodoViewModel @Inject constructor(
             is AddEditUiEvent.ChangeDeadline -> changeDeadline(event.deadline)
             AddEditUiEvent.SaveTodo -> saveTodo()
             AddEditUiEvent.DeleteTodo -> deleteTodo()
+            AddEditUiEvent.Close -> _actions.trySend(AddEditAction.NavigateBack)
+            is AddEditUiEvent.ShowDatePickerDialog -> _actions.trySend(AddEditAction.ShowDatePicker)
+            AddEditUiEvent.ClearDeadline -> changeDeadline(null)
+            AddEditUiEvent.ShowUrgencySelector -> _actions.trySend(AddEditAction.ShowUrgencySelector)
         }
     }
 

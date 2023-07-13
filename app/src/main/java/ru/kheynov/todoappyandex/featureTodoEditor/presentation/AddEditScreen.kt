@@ -1,24 +1,30 @@
 package ru.kheynov.todoappyandex.featureTodoEditor.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.material.Divider
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
+import ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency
 import ru.kheynov.todoappyandex.core.ui.AppTheme
+import ru.kheynov.todoappyandex.core.ui.LocalSpacing
+import ru.kheynov.todoappyandex.featureTodoEditor.presentation.components.DeadlineSelector
+import ru.kheynov.todoappyandex.featureTodoEditor.presentation.components.DeleteButton
+import ru.kheynov.todoappyandex.featureTodoEditor.presentation.components.EditorTopBar
+import ru.kheynov.todoappyandex.featureTodoEditor.presentation.components.TodoTitleInputField
+import ru.kheynov.todoappyandex.featureTodoEditor.presentation.components.UrgencySelector
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditState
 import ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders.AddEditUiEvent
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.util.UUID
 
@@ -27,22 +33,52 @@ fun AddEditScreen(
     state: State<AddEditState>,
     onEvent: (AddEditUiEvent) -> Unit,
 ) {
-    Surface(
+    val spacing = LocalSpacing.current
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colors.background)
     ) {
-        var switchState by remember {
-            mutableStateOf(false)
-        }
-        Box(contentAlignment = Alignment.Center) {
-            Switch(checked = switchState, onCheckedChange = { switchState = it })
-        }
+        EditorTopBar(
+            onCloseClick = { onEvent(AddEditUiEvent.Close) },
+            onSaveClick = { onEvent(AddEditUiEvent.SaveTodo) },
+        )
+
+        TodoTitleInputField(
+            text = state.value.todo.text,
+            onChanged = { onEvent(AddEditUiEvent.ChangeTitle(it)) },
+        )
+
+        Spacer(modifier = Modifier.height(spacing.spaceMedium))
+
+        UrgencySelector(
+            urgency = state.value.todo.urgency,
+            onClick = { onEvent(AddEditUiEvent.ShowUrgencySelector) },
+        )
+
+        Divider()
+
+        DeadlineSelector(
+            deadline = state.value.todo.deadline,
+            clearDeadline = { onEvent(AddEditUiEvent.ClearDeadline) },
+            showDatePicker = { onEvent(AddEditUiEvent.ShowDatePickerDialog) },
+        )
+
+        Divider()
+
+        DeleteButton(
+            enabled = state.value.isEditing,
+            onClick = { onEvent(AddEditUiEvent.DeleteTodo) },
+        )
     }
 }
 
 @Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_NO, name = "Light")
-@Preview(uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES, name = "Dark")
+@Preview(
+    uiMode = android.content.res.Configuration.UI_MODE_NIGHT_YES,
+    name = "Dark (RU)",
+    locale = "RU"
+)
 @Composable
 fun AddEditScreenPreview() {
     AppTheme {
@@ -51,10 +87,11 @@ fun AddEditScreenPreview() {
                 AddEditState(
                     todo = TodoItem(
                         id = UUID.randomUUID().toString(),
-                        text = "Title",
-                        urgency = ru.kheynov.todoappyandex.core.domain.entities.TodoUrgency.LOW,
+                        text = "",
+                        urgency = TodoUrgency.LOW,
                         isDone = false,
                         createdAt = LocalDateTime.parse("2020-01-01T00:00:00"),
+                        deadline = LocalDate.now(),
                     ),
                     isEditing = true,
                 )
@@ -83,6 +120,28 @@ fun AddEditScreenPreview() {
 
                     AddEditUiEvent.DeleteTodo -> state.value
                     AddEditUiEvent.SaveTodo -> state.value
+                    AddEditUiEvent.Close -> state.value
+                    AddEditUiEvent.ShowDatePickerDialog -> state.value.copy(
+                        todo = state.value.todo.copy(
+                            deadline = LocalDate.now()
+                        )
+                    )
+
+                    AddEditUiEvent.ClearDeadline -> state.value.copy(
+                        todo = state.value.todo.copy(
+                            deadline = null
+                        )
+                    )
+
+                    AddEditUiEvent.ShowUrgencySelector -> state.value.copy(
+                        todo = state.value.todo.copy(
+                            urgency = listOf(
+                                TodoUrgency.LOW,
+                                TodoUrgency.STANDARD,
+                                TodoUrgency.HIGH,
+                            ).random()
+                        )
+                    )
                 }
             })
     }
