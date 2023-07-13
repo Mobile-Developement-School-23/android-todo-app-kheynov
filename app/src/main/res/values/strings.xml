@@ -32,4 +32,5 @@
     <string name="dark_theme_name">Dark</string>
     <string name="light_theme_name">Light</string>
     <string name="system_theme_name">System</string>
+    <string name="choose_urgency">Choose task urgency</string>
 </resources>

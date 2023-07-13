@@ -104,7 +104,6 @@ class TodoViewModel @Inject constructor(
             AddEditUiEvent.Close -> _actions.trySend(AddEditAction.NavigateBack)
             is AddEditUiEvent.ShowDatePickerDialog -> _actions.trySend(AddEditAction.ShowDatePicker)
             AddEditUiEvent.ClearDeadline -> changeDeadline(null)
-            AddEditUiEvent.ShowUrgencySelector -> _actions.trySend(AddEditAction.ShowUrgencySelector)
         }
     }
 
@@ -128,16 +127,15 @@ class TodoViewModel @Inject constructor(
                         _actions.send(
                             AddEditAction.ShowError(UiText.StringResource(R.string.title_cannot_be_empty))
                         )
-                        return@executeOperation Resource.Failure(EmptyFieldException())
+                        Resource.Failure(EmptyFieldException())
                     } else if (state.value.todo.id.isBlank()) {
-                        return@executeOperation repository.addTodo(
+                        repository.addTodo(
                             _todoItem.value.copy(
                                 id = UUID.randomUUID().toString(), createdAt = LocalDateTime.now()
                             )
                         )
                     } else {
-                        return@executeOperation repository
-                            .editTodo(_todoItem.value.copy(editedAt = LocalDateTime.now()))
+                        repository.editTodo(_todoItem.value.copy(editedAt = LocalDateTime.now()))
                     }
                 }
                 when (handleResult) {

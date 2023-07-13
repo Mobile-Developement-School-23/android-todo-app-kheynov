@@ -53,6 +53,7 @@ val Colors.disabled: Color get() = if (isLight) colorDisableLight else colorDisa
 val Colors.tertiary: Color get() = if (isLight) colorTertiaryLight else colorTertiaryDark
 val Colors.elevated: Color get() = if (isLight) colorBackgroundElevatedLight else colorBackgroundElevatedDark
 
+
 @Composable
 fun AppTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
