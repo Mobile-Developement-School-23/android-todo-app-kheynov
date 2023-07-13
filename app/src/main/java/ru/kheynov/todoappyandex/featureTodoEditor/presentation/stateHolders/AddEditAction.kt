@@ -5,6 +5,5 @@ import ru.kheynov.todoappyandex.core.ui.UiText
 sealed interface AddEditAction {
     object NavigateBack : AddEditAction
     object ShowDatePicker : AddEditAction
-    object ShowUrgencySelector : AddEditAction
     data class ShowError(val text: UiText) : AddEditAction
 }

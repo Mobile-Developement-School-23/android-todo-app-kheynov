@@ -3,8 +3,8 @@ package ru.kheynov.todoappyandex.core.data.local
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
 import ru.kheynov.todoappyandex.core.data.local.converters.Converters
+import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
 
 /**
  * The Room Database that contains the todos table.

@@ -3,7 +3,6 @@ package ru.kheynov.todoappyandex.core.data.local
 import android.content.SharedPreferences
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import ru.kheynov.todoappyandex.di.MainActivityScope
 import java.util.UUID
 import javax.inject.Inject
 

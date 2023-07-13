@@ -17,18 +17,18 @@ import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
 import ru.kheynov.todoappyandex.core.data.remote.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
-import ru.kheynov.todoappyandex.core.utils.BadRequestException
-import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
-import ru.kheynov.todoappyandex.core.utils.NetworkException
 import ru.kheynov.todoappyandex.core.domain.utils.Operation.ADD
 import ru.kheynov.todoappyandex.core.domain.utils.Operation.DELETE
 import ru.kheynov.todoappyandex.core.domain.utils.Operation.UPDATE
+import ru.kheynov.todoappyandex.core.domain.utils.mergeCacheAndRemote
+import ru.kheynov.todoappyandex.core.utils.BadRequestException
+import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
+import ru.kheynov.todoappyandex.core.utils.NetworkException
 import ru.kheynov.todoappyandex.core.utils.OutOfSyncDataException
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.utils.UnauthorizedException
-import ru.kheynov.todoappyandex.core.domain.utils.mergeCacheAndRemote
 import java.time.LocalDateTime
 import javax.inject.Inject
 

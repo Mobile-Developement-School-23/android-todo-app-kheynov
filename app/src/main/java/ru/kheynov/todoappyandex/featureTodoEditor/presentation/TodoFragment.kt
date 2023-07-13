@@ -98,7 +98,6 @@ class TodoFragment : Fragment() {
                 }
 
             AddEditAction.ShowDatePicker -> showDatePicker()
-            AddEditAction.ShowUrgencySelector -> TODO()
         }
     }
 

@@ -17,6 +17,7 @@ import retrofit2.HttpException
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
+import ru.kheynov.todoappyandex.core.ui.UiText
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.NetworkException
@@ -24,7 +25,6 @@ import ru.kheynov.todoappyandex.core.utils.OperationHandlerWithFallback
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
-import ru.kheynov.todoappyandex.core.ui.UiText
 import ru.kheynov.todoappyandex.core.utils.UnableToPerformOperation
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState

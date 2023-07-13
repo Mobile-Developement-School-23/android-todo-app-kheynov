@@ -16,7 +16,7 @@ import ru.kheynov.todoappyandex.featureSettings.presentation.stateHolders.Settin
 import javax.inject.Inject
 
 class SettingsViewModel @Inject constructor(
-    private val settingsStorage: SettingsStorage
+    private val settingsStorage: SettingsStorage,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsState(UiTheme.SYSTEM))
     val state = _state.asStateFlow()
