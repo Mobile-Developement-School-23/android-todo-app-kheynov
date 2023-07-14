@@ -18,10 +18,11 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
-      - name: Putting data to api_token
+
+      - name: Putting token
         env:
           DATA: ${{ secrets.API_KEY }}
-        run: echo $DATA > ./app/src/main/java/ru/kheynov/todoappyandex/core/data/util/ApiToken.kt
+        run: echo $DATA >> local.properties
       - name: Build with Gradle
         run: ./gradlew build
       - name: Linter Check

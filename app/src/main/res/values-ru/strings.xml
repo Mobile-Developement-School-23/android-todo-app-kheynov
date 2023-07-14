@@ -33,4 +33,10 @@
     <string name="light_theme_name">Светлая</string>
     <string name="system_theme_name">Как в системе</string>
     <string name="choose_urgency">Выберите срочность задачи</string>
+    <string name="notifications">Уведомления</string>
+    <string name="notifications_setting_description">Уведомление придёт в 00:00 если в этот день есть дедлайны у задач</string>
+    <string name="notification_channel_name">Уведомления о дедлайне</string>
+    <string name="notification_channel_description">Уведомление придёт в 00:00 если в этот день есть дедлайны у задач</string>
+    <string name="deadline_notification_title">Дедлайн задачи</string>
+    <string name="deadline_notification_description">Задача: %1$s; Важность: %2$s</string>
 </resources>

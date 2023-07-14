@@ -18,7 +18,7 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val settingsStorage: SettingsStorage,
 ) : ViewModel() {
-    private val _state = MutableStateFlow(SettingsState(UiTheme.SYSTEM))
+    private val _state = MutableStateFlow(SettingsState(UiTheme.SYSTEM, false))
     val state = _state.asStateFlow()
 
     private val _action = Channel<SettingsAction>(Channel.BUFFERED)
@@ -26,7 +26,12 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _state.update { _state.value.copy(theme = settingsStorage.getTheme()) }
+            _state.update {
+                SettingsState(
+                    theme = settingsStorage.theme,
+                    isNotificationsEnabled = settingsStorage.notificationsEnabled
+                )
+            }
         }
     }
 
@@ -34,11 +39,16 @@ class SettingsViewModel @Inject constructor(
         viewModelScope.launch {
             when (event) {
                 is SettingsUiEvent.ChangeTheme -> {
-                    settingsStorage.saveTheme(event.theme)
+                    settingsStorage.theme = event.theme
                     _state.update { _state.value.copy(theme = event.theme) }
                 }
 
                 SettingsUiEvent.NavigateBack -> _action.send(SettingsAction.NavigateBack)
+                is SettingsUiEvent.ToggleNotifications -> {
+                    println("Notifications: ${event.state}")
+                    settingsStorage.notificationsEnabled = event.state
+                    _state.update { _state.value.copy(isNotificationsEnabled = event.state) }
+                }
             }
         }
     }

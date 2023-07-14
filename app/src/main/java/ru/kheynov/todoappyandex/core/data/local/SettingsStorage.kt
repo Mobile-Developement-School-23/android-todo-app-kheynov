@@ -11,33 +11,49 @@ import javax.inject.Inject
 
 private enum class SettingsKeys {
     THEME_KEY,
+    NOTIFICATIONS_KEY
 }
 
 @AppScope
 class SettingsStorage @Inject constructor(
     private val prefs: SharedPreferences,
 ) {
-    private val _themeObservable: MutableStateFlow<UiTheme> = MutableStateFlow(getTheme())
-    val themeObservable: StateFlow<UiTheme?> = _themeObservable.asStateFlow()
 
-    fun saveTheme(theme: UiTheme) {
-        saveToPreferences(theme.value, SettingsKeys.THEME_KEY)
-        _themeObservable.update { theme }
-    }
+    var theme: UiTheme = UiTheme.SYSTEM
+        get() =
+            UiTheme.parseTheme(
+                prefs.getInt(
+                    SettingsKeys.THEME_KEY.name,
+                    UiTheme.SYSTEM.value
+                )
+            )
+        set(value) {
+            saveToPreferences(value.value, SettingsKeys.THEME_KEY)
+            _themeFlow.update { value }
+            field = value
+        }
 
-    fun getTheme(): UiTheme = UiTheme.parseTheme(
-        prefs.getInt(
-            SettingsKeys.THEME_KEY.name,
-            UiTheme.SYSTEM.value
-        )
-    )
+    var notificationsEnabled: Boolean = false
+        get() = prefs.getBoolean(SettingsKeys.NOTIFICATIONS_KEY.name, false)
+        set(value) {
+            saveToPreferences(value, SettingsKeys.NOTIFICATIONS_KEY)
+            _notificationsFlow.update { value }
+            field = value
+        }
 
+    private val _themeFlow: MutableStateFlow<UiTheme> = MutableStateFlow(theme)
+    val themeFlow: StateFlow<UiTheme?> = _themeFlow.asStateFlow()
+
+    private val _notificationsFlow = MutableStateFlow(notificationsEnabled)
+    val notificationsFlow: StateFlow<Boolean> = _notificationsFlow.asStateFlow()
 
     private fun <T> saveToPreferences(value: T?, key: SettingsKeys) {
         val editor: SharedPreferences.Editor = prefs.edit()
         when (value) {
             is Int -> editor.putInt(key.name, value)
             is String -> editor.putString(key.name, value)
+            is Boolean -> editor.putBoolean(key.name, value)
+            else -> error("Unspecified pref type")
         }
         editor.apply()
     }

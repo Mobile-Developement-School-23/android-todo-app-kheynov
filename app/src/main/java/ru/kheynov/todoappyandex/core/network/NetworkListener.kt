@@ -1,4 +1,4 @@
-package ru.kheynov.todoappyandex.core.utils
+package ru.kheynov.todoappyandex.core.network
 
 import android.net.ConnectivityManager
 import android.net.Network

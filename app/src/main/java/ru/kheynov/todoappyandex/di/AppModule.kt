@@ -11,6 +11,7 @@ import dagger.Reusable
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
 import retrofit2.Retrofit
+import ru.kheynov.todoappyandex.core.data.local.TodoLocalDAO
 import ru.kheynov.todoappyandex.core.data.local.TodoLocalDatabase
 import ru.kheynov.todoappyandex.core.data.remote.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.core.data.remote.dao.TodoAPI
@@ -56,11 +57,17 @@ interface AppModule {
         @Provides
         @AppScope
         fun provideRepository(
-            db: TodoLocalDatabase,
+            dao: TodoLocalDAO,
             remote: RemoteDataSource,
         ): TodoItemsRepository = TodoRepositoryImpl(
-            localDataSource = db.dao,
+            localDataSource = dao,
             remoteDataSource = remote
         )
+
+        @Provides
+        @AppScope
+        fun provideLocalDao(
+            db: TodoLocalDatabase,
+        ): TodoLocalDAO = db.dao
     }
 }

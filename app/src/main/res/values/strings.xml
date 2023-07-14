@@ -33,4 +33,10 @@
     <string name="light_theme_name">Light</string>
     <string name="system_theme_name">System</string>
     <string name="choose_urgency">Choose task urgency</string>
+    <string name="notifications">Notifications</string>
+    <string name="notifications_setting_description">Notifications will be shown at 00:00 of the task deadline day</string>
+    <string name="notification_channel_name">Deadline notifications</string>
+    <string name="notification_channel_description">Will show notification at 00:00 if there is any deadline today</string>
+    <string name="deadline_notification_title">Task deadline</string>
+    <string name="deadline_notification_description">Task: %1$s; Urgency: %2$s</string>
 </resources>

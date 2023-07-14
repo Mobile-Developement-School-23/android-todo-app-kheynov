@@ -1,5 +1,6 @@
 package ru.kheynov.todoappyandex
 
+import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
 import androidx.appcompat.app.AppCompatActivity
@@ -14,7 +15,9 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import kotlinx.coroutines.launch
 import ru.kheynov.todoappyandex.core.data.local.SettingsStorage
-import ru.kheynov.todoappyandex.core.utils.NetworkListener
+import ru.kheynov.todoappyandex.core.network.NetworkListener
+import ru.kheynov.todoappyandex.core.notifications.AlarmReceiver
+import ru.kheynov.todoappyandex.core.notifications.AndroidAlarmScheduler
 import ru.kheynov.todoappyandex.core.workers.SyncTodosWorker
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -29,6 +32,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var settingsStorage: SettingsStorage
 
+    @Inject
+    lateinit var alarmScheduler: AndroidAlarmScheduler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.appComponent
@@ -39,16 +45,30 @@ class MainActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.CREATED) {
-                settingsStorage.themeObservable.collect { theme ->
+                settingsStorage.themeFlow.collect { theme ->
                     theme?.let { AppCompatDelegate.setDefaultNightMode(it.value) }
+                }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                settingsStorage.notificationsFlow.collect {
+                    if (it) {
+                        println("alarmScheduled")
+                        alarmScheduler.scheduleAlarm()
+                    } else {
+                        println("alarmCanceled")
+                        alarmScheduler.cancelAlarm()
+                    }
                 }
             }
         }
     }
 
     override fun onStart() {
-        if (Settings.System.canWrite(this))
+        if (Settings.System.canWrite(this)) {
             networkListener.start()
+        }
         super.onStart()
     }
 
@@ -75,10 +95,9 @@ class MainActivity : AppCompatActivity() {
             ).addTag("INTERNET_LOST_N_FOUND")
             .build()
         WorkManager.getInstance(this).enqueue(syncWorker)
-        if (Settings.System.canWrite(this))
+        if (Settings.System.canWrite(this)) {
             networkListener.stop()
+        }
         super.onStop()
     }
 }
-
-

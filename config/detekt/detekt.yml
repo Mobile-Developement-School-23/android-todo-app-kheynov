@@ -512,7 +512,7 @@ style:
   BracesOnIfStatements:
     active: false
     singleLine: 'never'
-    multiLine: 'always'
+    multiLine: 'never'
   BracesOnWhenStatements:
     active: false
     singleLine: 'necessary'
