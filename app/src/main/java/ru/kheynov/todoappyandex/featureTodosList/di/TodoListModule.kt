@@ -12,5 +12,5 @@ interface TodoListModule {
     @Binds
     @IntoMap
     @ViewModelKey(MainScreenViewModel::class)
-    fun bindViewModel(viewmodel: MainScreenViewModel): ViewModel
+    fun bindViewModel(viewModel: MainScreenViewModel): ViewModel
 }

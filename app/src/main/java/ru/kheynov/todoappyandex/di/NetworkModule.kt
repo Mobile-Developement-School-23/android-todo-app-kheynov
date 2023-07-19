@@ -8,19 +8,19 @@ import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import ru.kheynov.todoappyandex.core.data.network.interceptors.TokenInterceptor
+import ru.kheynov.todoappyandex.core.data.remote.interceptors.TokenInterceptor
 
 @OptIn(ExperimentalSerializationApi::class)
 @Module
 interface NetworkModule {
     companion object {
         private const val BASE_URL = "https://beta.mrdekk.ru/todobackend/"
-        
+
         @Provides
         @AppScope
         fun provideOkHttpClient(): OkHttpClient =
             OkHttpClient.Builder().addInterceptor(TokenInterceptor()).build()
-        
+
         @Provides
         @AppScope
         fun provideRetrofit(

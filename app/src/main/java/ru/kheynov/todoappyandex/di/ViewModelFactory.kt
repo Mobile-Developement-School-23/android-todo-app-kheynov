@@ -37,7 +37,6 @@ class TodoViewModelFactory @Inject constructor(
 @Module
 interface ViewModelBuilderModule {
     @Binds
-    @FragmentScope
     fun bindViewModelFactory(
         factory: TodoViewModelFactory,
     ): ViewModelProvider.Factory

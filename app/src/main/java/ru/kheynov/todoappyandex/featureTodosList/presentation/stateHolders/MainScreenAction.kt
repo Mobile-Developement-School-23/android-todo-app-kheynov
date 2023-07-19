@@ -1,6 +1,6 @@
 package ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders
 
-import ru.kheynov.todoappyandex.core.utils.UiText
+import ru.kheynov.todoappyandex.core.ui.UiText
 
 sealed interface MainScreenAction {
     data class NavigateToEditing(val id: String) : MainScreenAction

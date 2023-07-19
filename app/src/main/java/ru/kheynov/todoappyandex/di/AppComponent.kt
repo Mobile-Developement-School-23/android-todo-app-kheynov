@@ -5,14 +5,19 @@ import android.content.Context
 import dagger.BindsInstance
 import dagger.Component
 import ru.kheynov.todoappyandex.TodoApp
+import ru.kheynov.todoappyandex.core.notifications.di.AlarmReceiverComponent
+import ru.kheynov.todoappyandex.featureSettings.di.SettingsComponent
 import ru.kheynov.todoappyandex.featureTodoEditor.di.TodoEditorComponent
 import ru.kheynov.todoappyandex.featureTodosList.di.TodoListComponent
+import javax.inject.Scope
+
+@Scope
+annotation class AppScope
 
 @Component(
     modules = [
         AppModule::class,
         NetworkModule::class,
-        SubcomponentsModule::class,
     ]
 )
 @AppScope
@@ -24,10 +29,12 @@ interface AppComponent {
             @BindsInstance context: Context,
         ): AppComponent
     }
-    
+
     fun inject(app: TodoApp)
-    
+
     fun todoListComponent(): TodoListComponent.Factory
     fun todoEditorComponent(): TodoEditorComponent.Factory
     fun mainActivityComponent(): MainActivityComponent.Factory
+    fun settingsComponent(): SettingsComponent.Factory
+    fun alarmReceiverComponent(): AlarmReceiverComponent.Factory
 }

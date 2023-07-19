@@ -10,25 +10,25 @@ import okhttp3.internal.http.HTTP_INTERNAL_SERVER_ERROR
 import okhttp3.internal.http.HTTP_NOT_FOUND
 import okhttp3.internal.http.HTTP_UNAUTHORIZED
 import retrofit2.HttpException
-import ru.kheynov.todoappyandex.core.data.cache.TodoLocalDAO
+import ru.kheynov.todoappyandex.core.data.local.TodoLocalDAO
 import ru.kheynov.todoappyandex.core.data.mappers.toDomain
 import ru.kheynov.todoappyandex.core.data.mappers.toLocalDTO
 import ru.kheynov.todoappyandex.core.data.model.local.TodoLocalDTO
-import ru.kheynov.todoappyandex.core.data.network.dao.RemoteDataSource
+import ru.kheynov.todoappyandex.core.data.remote.dao.RemoteDataSource
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
+import ru.kheynov.todoappyandex.core.domain.utils.Operation.ADD
+import ru.kheynov.todoappyandex.core.domain.utils.Operation.DELETE
+import ru.kheynov.todoappyandex.core.domain.utils.Operation.UPDATE
+import ru.kheynov.todoappyandex.core.domain.utils.mergeCacheAndRemote
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.NetworkException
-import ru.kheynov.todoappyandex.core.utils.Operation.ADD
-import ru.kheynov.todoappyandex.core.utils.Operation.DELETE
-import ru.kheynov.todoappyandex.core.utils.Operation.UPDATE
 import ru.kheynov.todoappyandex.core.utils.OutOfSyncDataException
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
 import ru.kheynov.todoappyandex.core.utils.UnauthorizedException
-import ru.kheynov.todoappyandex.core.utils.mergeCacheAndRemote
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -43,7 +43,7 @@ private fun handleException(e: Exception): Resource.Failure {
                             message.contains("duplicate") -> DuplicateItemException()
                             else -> BadRequestException()
                         }
-                        
+
                         HTTP_INTERNAL_SERVER_ERROR, HTTP_BAD_GATEWAY -> ServerSideException()
                         HTTP_NOT_FOUND -> TodoItemNotFoundException()
                         HTTP_UNAUTHORIZED -> UnauthorizedException()
@@ -69,7 +69,7 @@ class TodoRepositoryImpl @Inject constructor(
 ) : TodoItemsRepository {
     override val todos: Flow<List<TodoItem>> = localDataSource.observeTodos()
         .map { it.map(TodoLocalDTO::toDomain) }
-    
+
     /**
      * Synchronizes todos
      * Fetches todos from remote data source and pushes them to local data source
@@ -91,7 +91,7 @@ class TodoRepositoryImpl @Inject constructor(
                         DELETE -> localDataSource.deleteTodoById(it.todo.id)
                     }
                 }
-                
+
                 val res = localDataSource.getTodos().map { it.toDomain() }
                 remoteDataSource.pushTodos(res)
                 Resource.Success(Unit)
@@ -99,8 +99,8 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
-    
+
+
     /**
      * Adds todo
      * Adds todo to local data source and pushes it to remote data source
@@ -117,7 +117,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Deletes todo
      * Deletes todo from local data source and pushes it to remote data source
@@ -134,7 +134,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Edits todo
      * Edits todo in local data source and pushes it to remote data source
@@ -154,7 +154,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Gets todo by id
      * @param id [String]
@@ -173,7 +173,7 @@ class TodoRepositoryImpl @Inject constructor(
                 handleException(e)
             }
         }
-    
+
     /**
      * Sets todo state
      * Sets todo state in local data source and pushes it to remote data source

@@ -1,6 +1,6 @@
 package ru.kheynov.todoappyandex.featureTodoEditor.presentation.stateHolders
 
-import ru.kheynov.todoappyandex.core.utils.UiText
+import ru.kheynov.todoappyandex.core.ui.UiText
 
 sealed interface AddEditAction {
     object NavigateBack : AddEditAction

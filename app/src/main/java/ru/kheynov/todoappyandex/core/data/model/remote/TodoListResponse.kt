@@ -10,7 +10,7 @@ import kotlinx.serialization.Serializable
 data class TodoListResponse(
     val revision: Int,
     val status: String,
-    
+
     @SerialName("list")
     val todos: List<TodoRemoteDTO>,
 )

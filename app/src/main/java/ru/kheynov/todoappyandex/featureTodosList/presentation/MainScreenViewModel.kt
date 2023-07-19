@@ -17,6 +17,7 @@ import retrofit2.HttpException
 import ru.kheynov.todoappyandex.R
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import ru.kheynov.todoappyandex.core.domain.repositories.TodoItemsRepository
+import ru.kheynov.todoappyandex.core.ui.UiText
 import ru.kheynov.todoappyandex.core.utils.BadRequestException
 import ru.kheynov.todoappyandex.core.utils.DuplicateItemException
 import ru.kheynov.todoappyandex.core.utils.NetworkException
@@ -24,7 +25,6 @@ import ru.kheynov.todoappyandex.core.utils.OperationHandlerWithFallback
 import ru.kheynov.todoappyandex.core.utils.Resource
 import ru.kheynov.todoappyandex.core.utils.ServerSideException
 import ru.kheynov.todoappyandex.core.utils.TodoItemNotFoundException
-import ru.kheynov.todoappyandex.core.utils.UiText
 import ru.kheynov.todoappyandex.core.utils.UnableToPerformOperation
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenAction
 import ru.kheynov.todoappyandex.featureTodosList.presentation.stateHolders.MainScreenState
@@ -37,34 +37,36 @@ class MainScreenViewModel @Inject constructor(
         Log.e("Coroutine", "Error: ", throwable)
         CoroutineScope(context).launch { handleException(throwable) }
     }
-    
+
     private val _state = MutableStateFlow<MainScreenState>(MainScreenState.Loading)
     val state: StateFlow<MainScreenState> = _state.asStateFlow()
-    
-    private val operationHandler = OperationHandlerWithFallback(
-        fallbackAction = {
-            repository.syncTodos()
-        }
-    )
-    
+
+    private val operationHandler = OperationHandlerWithFallback(fallbackAction = {
+        repository.syncTodos()
+    })
+
     private val _actions: Channel<MainScreenAction> = Channel(Channel.BUFFERED)
     val actions: Flow<MainScreenAction> = _actions.receiveAsFlow()
-    
-    private var isShowingDoneTasks = true
-    
+
+    var isShowingDoneTasks = true
+        private set
+
     private var lastOperation: (suspend () -> Unit)? = null
-    
+
     private val todos = repository.todos
-    
+
     init {
         viewModelScope.launch {
             repository.syncTodos()
             todos.collect { todos ->
-                _state.update { MainScreenState.Loaded(todos) }
+                _state.update {
+                    if (todos.isNotEmpty()) MainScreenState.Loaded(todos)
+                    else MainScreenState.Empty
+                }
             }
         }
     }
-    
+
     fun setTodoState(todoItem: TodoItem, state: Boolean) {
         viewModelScope.launch(exceptionHandler) {
             _state.update { MainScreenState.Loading }
@@ -80,57 +82,56 @@ class MainScreenViewModel @Inject constructor(
             lastOperation?.invoke()
         }
     }
-    
+
     fun updateTodos() {
         viewModelScope.launch(exceptionHandler) {
             _state.update { MainScreenState.Loading }
             repository.syncTodos()
         }
     }
-    
-    
+
+
     fun editTodo(todoItem: TodoItem) {
         viewModelScope.launch(exceptionHandler) {
             _actions.send(MainScreenAction.NavigateToEditing(todoItem.id))
         }
     }
-    
+
     fun addTodo() {
         viewModelScope.launch(exceptionHandler) {
             _actions.send(MainScreenAction.NavigateToAdding)
         }
     }
-    
+
     fun toggleDoneTasks() {
         viewModelScope.launch(exceptionHandler) {
             isShowingDoneTasks = !isShowingDoneTasks
             _actions.send(MainScreenAction.ToggleDoneTasks(isShowingDoneTasks))
         }
     }
-    
+
     fun retryLastOperation() {
         viewModelScope.launch(exceptionHandler) {
             lastOperation?.invoke()
         }
     }
-    
+
     private suspend fun handleException(
         e: Throwable,
     ) {
-        val errorText =
-            when (e) {
-                is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
-                
-                is ServerSideException,
-                is BadRequestException,
-                is TodoItemNotFoundException,
-                is DuplicateItemException,
-                -> UiText.StringResource(R.string.server_error)
-                
-                is UnableToPerformOperation -> UiText.StringResource(R.string.unable_to_perform)
-                else -> UiText.PlainText(e.localizedMessage?.toString() ?: "Unknown error")
-            }
-        
+        val errorText = when (e) {
+            is HttpException, is NetworkException -> UiText.StringResource(R.string.connection_error)
+
+            is ServerSideException,
+            is BadRequestException,
+            is TodoItemNotFoundException,
+            is DuplicateItemException,
+            -> UiText.StringResource(R.string.server_error)
+
+            is UnableToPerformOperation -> UiText.StringResource(R.string.unable_to_perform)
+            else -> UiText.PlainText(e.localizedMessage?.toString() ?: "Unknown error")
+        }
+
         _actions.send(MainScreenAction.ShowError(errorText))
     }
 }

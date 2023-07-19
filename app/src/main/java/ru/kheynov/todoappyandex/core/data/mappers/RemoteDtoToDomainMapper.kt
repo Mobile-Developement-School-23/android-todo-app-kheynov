@@ -1,7 +1,7 @@
 package ru.kheynov.todoappyandex.core.data.mappers
 
+import ru.kheynov.todoappyandex.core.data.local.converters.Converters
 import ru.kheynov.todoappyandex.core.data.model.remote.TodoRemoteDTO
-import ru.kheynov.todoappyandex.core.data.util.Converters
 import ru.kheynov.todoappyandex.core.domain.entities.TodoItem
 import java.time.Instant
 import java.time.LocalDate
